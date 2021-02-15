@@ -1,10 +1,7 @@
-project_path: ./Your Unity Project
-build_name: YourUnityProject
+project_path: ./Project Virtual Tabletop
+build_name: ProjectVirtualTabletop
 platforms:
-  - StandaloneLinux64
-  - StandaloneWindows64
-  - StandaloneWindows
-  - StandaloneOSX
+  - WebGL
 file_extensions:
   - name: StandaloneWindows64
     ext: exe
