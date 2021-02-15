@@ -1,0 +1,1 @@
+This "Blends" directory is for the .blend files from Blender. This is to preserve the working project files from Blender so changes can be easily made later if necessary. Please feel free to create further sub-directories if more organization is needed. This is a temporary txt file. Feel free to delete after adding artifacts here.

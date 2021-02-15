@@ -1,0 +1,1 @@
+This "Textures" directory is for 2D images which will be applied to materials for the use of texturing 3D game objects. This includes any textures and/or texture maps that you have downloaded or created yourself. Please feel free to create further sub-directories if more organization is needed. This is a temporary txt file. Feel free to delete after adding artifacts here.

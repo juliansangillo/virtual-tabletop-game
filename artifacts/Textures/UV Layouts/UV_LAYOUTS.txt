@@ -1,0 +1,1 @@
+This "UV Layouts" directory is for UVs that were exported from the modeling software as a 2D image to be used as guidelines for creating textures in a 2D image editing software. Please feel free to create further sub-directories if more organization is needed. This is a temporary txt file. Feel free to delete after adding artifacts here.

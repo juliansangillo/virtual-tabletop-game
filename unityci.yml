@@ -1,0 +1,26 @@
+project_path: ./Your Unity Project
+build_name: YourUnityProject
+platforms:
+  - StandaloneLinux64
+  - StandaloneWindows64
+  - StandaloneWindows
+  - StandaloneOSX
+file_extensions:
+  - name: StandaloneWindows64
+    ext: exe
+  - name: StandaloneWindows
+    ext: exe
+  - name: StandaloneOSX
+    ext: app
+  - name: Android
+    ext: apk
+mapping:
+  prod:
+    branch: master
+    prerelease: false
+  test:
+    branch: beta
+    prerelease: true
+  dev:
+    branch: alpha
+    prerelease: true

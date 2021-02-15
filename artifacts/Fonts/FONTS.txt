@@ -1,0 +1,1 @@
+This "Fonts" directory is for preserving any font files (i.e. .ttf files) that are going to be used for text in game. Please feel free to create further sub-directories if more organization is needed. This is a temporary txt file. Feel free to delete after adding artifacts here.

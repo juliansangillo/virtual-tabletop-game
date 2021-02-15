@@ -1,0 +1,1 @@
+This "XCFs" directory is for the .xcf files from Gimp (GNU Image Manipulation Program). This is to preserve the working project files from Gimp so changes can be easily made later if necessary. Please feel free to create further sub-directories if more organization is needed. This is a temporary txt file. Feel free to delete after adding artifacts here.
