@@ -1,9 +1,9 @@
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/juliansangillo/unity3d-project?label=stable)  
-![Combined Checks (master branch)](https://badgen.net/github/status/juliansangillo/unity3d-project?label=build)  
-![GitHub issues](https://img.shields.io/github/issues/juliansangillo/unity3d-project)  
-![GitHub last commit](https://img.shields.io/github/last-commit/juliansangillo/unity3d-project)  
-![GitHub All Releases](https://img.shields.io/github/downloads/juliansangillo/unity3d-project/total)  
-![GitHub License](https://img.shields.io/github/license/juliansangillo/unity3d-project?color=blue)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/juliansangillo/virtual-tabletop-game?label=stable)  
+![Combined Checks (master branch)](https://badgen.net/github/status/juliansangillo/virtual-tabletop-game?label=build)  
+![GitHub issues](https://img.shields.io/github/issues/juliansangillo/virtual-tabletop-game)  
+![GitHub last commit](https://img.shields.io/github/last-commit/juliansangillo/virtual-tabletop-game)  
+![GitHub All Releases](https://img.shields.io/github/downloads/juliansangillo/virtual-tabletop-game/total)  
+![GitHub License](https://img.shields.io/github/license/juliansangillo/virtual-tabletop-game?color=blue)
 
 # {Project Name}
 {Your project/repository description here}
