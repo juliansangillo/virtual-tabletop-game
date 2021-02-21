@@ -1,5 +1,5 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/juliansangillo/virtual-tabletop-game?label=stable)  
-![Combined Checks (master branch)](https://badgen.net/github/status/juliansangillo/virtual-tabletop-game/master?label=build)  
+![Github branch checks state](https://img.shields.io/github/checks-status/juliansangillo/virtual-tabletop-game/master?label=build)  
 ![GitHub issues](https://img.shields.io/github/issues/juliansangillo/virtual-tabletop-game)  
 ![GitHub last commit](https://img.shields.io/github/last-commit/juliansangillo/virtual-tabletop-game)  
 ![GitHub All Releases](https://img.shields.io/github/downloads/juliansangillo/virtual-tabletop-game/total)  
