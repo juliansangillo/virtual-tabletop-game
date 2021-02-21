@@ -26,7 +26,12 @@ namespace ProjectVirtualTabletop.GameController {
 		}
 
 		public bool IsEmpty(Space space) {
-			throw new System.NotImplementedException();
+			if(!space.IsValid())
+				throw new InvalidSpaceException();
+			else if(space.Row >= Map.GetLength(0) || space.Column >= Map.GetLength(1))
+				throw new ArgumentException("Space doesn't exist on map", "space");
+
+			return Map[space.Row, space.Column] == null;
 		}
 
 		public void Move(Space from, Space to) {
