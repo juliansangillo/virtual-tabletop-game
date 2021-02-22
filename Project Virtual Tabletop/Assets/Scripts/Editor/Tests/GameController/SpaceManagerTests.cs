@@ -274,5 +274,39 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 				spaceManager.IsEmpty(invalidSpace);
 			});
 		}
+
+		[Test]
+		public void Move_GivenTwoValidSpacesWhereAnElementIsLocatedOnTheFirstSpaceAndTheSecondSpaceIsEmpty_MoveElementFromTheFirstSpaceToTheSecondSpace() {
+			Element expected = new Element();
+			Element[,] fakeMap = new Element[2,2];
+			fakeMap[0,0] = expected;
+			fakeMap[0,1] = null;
+			fakeMap[1,0] = null;
+			fakeMap[1,1] = null;
+			spaceManager.Map = fakeMap;
+			Entities.Space from = new Entities.Space(0, 0);
+
+			spaceManager.Move(new Entities.Space(0, 0), new Entities.Space(1, 1));
+			Element actual = spaceManager.Map[1,1];
+
+			Assert.AreEqual(expected, actual);
+		}
+
+		/*[Test]
+		public void Move_GivenTwoValidSpacesWhereAnElementIsLocatedOnTheSecondSpace_ThrowInvalidOperationException() {
+			Element expected = new Element();
+			Element[,] fakeMap = new Element[2,2];
+			fakeMap[0,0] = expected;
+			fakeMap[0,1] = null;
+			fakeMap[1,0] = null;
+			fakeMap[1,1] = null;
+			spaceManager.Map = fakeMap;
+			Entities.Space from = new Entities.Space(0, 0);
+
+			spaceManager.Move(new Entities.Space(0, 0), new Entities.Space(1, 1));
+			Element actual = spaceManager.Map[1,1];
+
+			Assert.AreEqual(expected, actual);
+		}*/
 	}
 }

@@ -41,7 +41,8 @@ namespace ProjectVirtualTabletop.GameController {
 		}
 
 		public void Move(Space from, Space to) {
-			throw new System.NotImplementedException();
+			Map[to.Row, to.Column] = Map[from.Row, from.Column];
+			Map[from.Row, from.Column] = null;
 		}
 
 		public Element RemoveFrom(Space space) {
