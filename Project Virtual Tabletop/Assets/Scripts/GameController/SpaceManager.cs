@@ -8,7 +8,9 @@ namespace ProjectVirtualTabletop.GameController {
 		public Element[,] Map { get; set; }
 
 		public void AddTo(Space space, Element element) {
-			if(!space.IsValid())
+			if(space == null || element == null)
+				throw new ArgumentNullException("space,element", string.Format("A required argument was null. space = {0} , element = {1}", space, element));
+			else if(!space.IsValid())
 				throw new InvalidSpaceException();
 			else if(space.Row >= Map.GetLength(0) || space.Column >= Map.GetLength(1))
 				throw new ArgumentException("Space doesn't exist on map", "space");
@@ -17,7 +19,9 @@ namespace ProjectVirtualTabletop.GameController {
 		}
 
 		public Element GetElementOn(Space space) {
-			if(!space.IsValid())
+			if(space == null)
+				throw new ArgumentNullException("space", "Space cannot be null.");
+			else if(!space.IsValid())
 				throw new InvalidSpaceException();
 			else if(space.Row >= Map.GetLength(0) || space.Column >= Map.GetLength(1))
 				throw new ArgumentException("Space doesn't exist on map", "space");
@@ -26,7 +30,9 @@ namespace ProjectVirtualTabletop.GameController {
 		}
 
 		public bool IsEmpty(Space space) {
-			if(!space.IsValid())
+			if(space == null)
+				throw new ArgumentNullException("space", "Space cannot be null.");
+			else if(!space.IsValid())
 				throw new InvalidSpaceException();
 			else if(space.Row >= Map.GetLength(0) || space.Column >= Map.GetLength(1))
 				throw new ArgumentException("Space doesn't exist on map", "space");

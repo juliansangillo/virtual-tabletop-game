@@ -39,6 +39,34 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
+		public void AddTo_GivenNullSpace_ThrowArgumentNullExceptionWithCorrectMessage() {
+			Element element = new Element();
+			Element[,] fakeMap = new Element[2,2];
+			spaceManager.Map = fakeMap;
+
+			Exception expected = new ArgumentNullException("space,element", string.Format("A required argument was null. space = {0} , element = {1}", null, element));
+
+			Exception actual = Assert.Throws<ArgumentNullException>(() => {
+				spaceManager.AddTo(null, element);
+			});
+			Assert.AreEqual(expected.Message, actual.Message);
+		}
+
+		[Test]
+		public void AddTo_GivenNullElement_ThrowArgumentNullExceptionWithCorrectMessage() {
+			Element[,] fakeMap = new Element[2,2];
+			spaceManager.Map = fakeMap;
+			Entities.Space space = new Entities.Space(1, 1);
+
+			Exception expected = new ArgumentNullException("space,element", string.Format("A required argument was null. space = {0} , element = {1}", space, null));
+
+			Exception actual = Assert.Throws<ArgumentNullException>(() => {
+				spaceManager.AddTo(space, null);
+			});
+			Assert.AreEqual(expected.Message, actual.Message);
+		}
+
+		[Test]
 		public void AddTo_GivenValidSpaceWhereRowDoesNotExistOnMap_ThrowArgumentException() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
@@ -101,6 +129,16 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			Element actual = spaceManager.GetElementOn(expectedSpace);
 
 			Assert.AreEqual(expected, actual);
+		}
+
+		[Test]
+		public void GetElementOn_GivenNullSpace_ThrowArgumentNullException() {
+			Element[,] fakeMap = new Element[2,2];
+			spaceManager.Map = fakeMap;
+
+			Assert.Throws<ArgumentNullException>(() => {
+				spaceManager.GetElementOn(null);
+			});
 		}
 
 		[Test]
@@ -177,6 +215,16 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			bool result = spaceManager.IsEmpty(expectedSpace);
 
 			Assert.False(result);
+		}
+
+		[Test]
+		public void IsEmpty_GivenNullSpace_ThrowArgumentNullException() {
+			Element[,] fakeMap = new Element[2,2];
+			spaceManager.Map = fakeMap;
+
+			Assert.Throws<ArgumentNullException>(() => {
+				spaceManager.IsEmpty(null);
+			});
 		}
 
 		[Test]
