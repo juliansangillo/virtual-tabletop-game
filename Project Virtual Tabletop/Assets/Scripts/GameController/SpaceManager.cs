@@ -15,6 +15,8 @@ namespace ProjectVirtualTabletop.GameController {
 			ThrowExceptionIfArgumentIsNull(element, "element", "A required argument was null");
 			ThrowExceptionIfSpaceIsInvalid(space);
 			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", "Space doesn't exist on map");
+			ThrowExceptionIfAnElementExistsOnSpace(space, "Space is not empty. A space must be unoccupied in order to add an element to it. " +
+					"Please remove the existing element from this space first before adding another element.");
 
 			Map[space.Row, space.Column] = element;
 		}

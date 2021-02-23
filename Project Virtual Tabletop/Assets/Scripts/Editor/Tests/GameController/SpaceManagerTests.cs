@@ -39,6 +39,21 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
+		public void AddTo_GivenValidSpaceWhereAnElementIsLocatedOnIt_ThrowInvalidOperationException() {
+			Element element = new Element();
+			Element[,] fakeMap = new Element[2,2];
+			fakeMap[0,0] = null;
+			fakeMap[0,1] = null;
+			fakeMap[1,0] = null;
+			fakeMap[1,1] = element;
+			spaceManager.Map = fakeMap;
+
+			Assert.Throws<InvalidOperationException>(() => {
+				spaceManager.AddTo(new Entities.Space(1, 1), new Element());
+			});
+		}
+
+		[Test]
 		public void AddTo_GivenNullSpace_ThrowArgumentNullExceptionWithCorrectMessage() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
