@@ -66,7 +66,18 @@ namespace ProjectVirtualTabletop.GameController {
 		}
 
 		public Element RemoveFrom(Space space) {
-			throw new System.NotImplementedException();
+			if(space == null)
+				throw new ArgumentNullException("space", "Space cannot be null.");
+			else if(!space.IsValid())
+				throw new InvalidSpaceException();
+			else if(space.Row >= Map.GetLength(0) || space.Column >= Map.GetLength(1))
+				throw new ArgumentException("Space doesn't exist on map", "space");
+			else if(Map[space.Row, space.Column] == null)
+				throw new InvalidOperationException("The space is empty. An element must exist on the space to remove from it");
+
+			Element element = Map[space.Row, space.Column];
+			Map[space.Row, space.Column] = null;
+			return element;
 		}
 	}
 }

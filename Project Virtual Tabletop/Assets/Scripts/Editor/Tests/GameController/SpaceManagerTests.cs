@@ -479,5 +479,89 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			});
 			Assert.AreEqual(expected.Message, actual.Message);
 		}
+
+		[Test]
+		public void RemoveFrom_GivenValidSpaceWhereAnElementExistsOnThatSpace_RemoveElementFromThatSpaceAndReturnTheElement() {
+			Element expected = new Element();
+			Element[,] fakeMap = new Element[2,2];
+			fakeMap[0,0] = null;
+			fakeMap[0,1] = expected;
+			fakeMap[1,0] = null;
+			fakeMap[1,1] = null;
+			spaceManager.Map = fakeMap;
+
+			Element actual = spaceManager.RemoveFrom(new Entities.Space(0, 1));
+
+			Assert.IsNull(spaceManager.Map[0,1]);
+			Assert.AreEqual(expected, actual);
+		}
+
+		[Test]
+		public void RemoveFrom_GivenValidSpaceWhereAnElementDoesNotExistOnThatSpace_ThrowInvalidOperationException() {
+			Element[,] fakeMap = new Element[2,2];
+			fakeMap[0,0] = null;
+			fakeMap[0,1] = null;
+			fakeMap[1,0] = null;
+			fakeMap[1,1] = null;
+			spaceManager.Map = fakeMap;
+
+			Assert.Throws<InvalidOperationException>(() => {
+				spaceManager.RemoveFrom(new Entities.Space(0, 1));
+			});
+		}
+
+		[Test]
+		public void RemoveFrom_GivenValidSpaceWhereRowDoesNotExistOnMap_ThrowArgumentException() {
+			Element[,] fakeMap = new Element[2,2];
+			spaceManager.Map = fakeMap;
+			Entities.Space nonExistingSpace = new Entities.Space(5, 1);
+
+			Assert.Throws<ArgumentException>(() => {
+				spaceManager.RemoveFrom(nonExistingSpace);
+			});
+		}
+
+		[Test]
+		public void RemoveFrom_GivenValidSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentException() {
+			Element[,] fakeMap = new Element[2,2];
+			spaceManager.Map = fakeMap;
+			Entities.Space nonExistingSpace = new Entities.Space(1, 5);
+
+			Assert.Throws<ArgumentException>(() => {
+				spaceManager.RemoveFrom(nonExistingSpace);
+			});
+		}
+
+		[Test]
+		public void RemoveFrom_GivenInvalidSpaceWhereRowIsNegative_ThrowInvalidSpaceException() {
+			Element[,] fakeMap = new Element[2,2];
+			spaceManager.Map = fakeMap;
+			Entities.Space invalidSpace = new Entities.Space(-1, 0);
+
+			Assert.Throws<InvalidSpaceException>(() => {
+				spaceManager.RemoveFrom(invalidSpace);
+			});
+		}
+
+		[Test]
+		public void RemoveFrom_GivenInvalidSpaceWhereColumnIsNegative_ThrowInvalidSpaceException() {
+			Element[,] fakeMap = new Element[2,2];
+			spaceManager.Map = fakeMap;
+			Entities.Space invalidSpace = new Entities.Space(0, -1);
+
+			Assert.Throws<InvalidSpaceException>(() => {
+				spaceManager.RemoveFrom(invalidSpace);
+			});
+		}
+
+		[Test]
+		public void RemoveFrom_GivenNullSpace_ThrowArgumentNullException() {
+			Element[,] fakeMap = new Element[2,2];
+			spaceManager.Map = fakeMap;
+
+			Assert.Throws<ArgumentNullException>(() => {
+				spaceManager.RemoveFrom(null);
+			});
+		}
 	}
 }
