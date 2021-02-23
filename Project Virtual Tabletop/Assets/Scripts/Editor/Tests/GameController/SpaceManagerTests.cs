@@ -44,7 +44,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager.Map = fakeMap;
 
-			Exception expected = new ArgumentNullException("space,element", string.Format("A required argument was null. space = {0} , element = {1}", null, element));
+			Exception expected = new ArgumentNullException("space", "A required argument was null");
 
 			Exception actual = Assert.Throws<ArgumentNullException>(() => {
 				spaceManager.AddTo(null, element);
@@ -58,7 +58,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			spaceManager.Map = fakeMap;
 			Entities.Space space = new Entities.Space(1, 1);
 
-			Exception expected = new ArgumentNullException("space,element", string.Format("A required argument was null. space = {0} , element = {1}", space, null));
+			Exception expected = new ArgumentNullException("element", "A required argument was null");
 
 			Exception actual = Assert.Throws<ArgumentNullException>(() => {
 				spaceManager.AddTo(space, null);
@@ -302,7 +302,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			fakeMap[1,1] = element2;
 			spaceManager.Map = fakeMap;
 
-			Exception expected = new InvalidOperationException("The space to move to is not empty. A space must be unoccupied to add an element to it. " +
+			Exception expected = new InvalidOperationException("The space to move to is not empty. A space must be unoccupied in order to add an element to it. " +
 				"Please remove the existing element from this space first before adding another element.");
 
 			Exception actual = Assert.Throws<InvalidOperationException>(() => {
@@ -320,7 +320,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			fakeMap[1,1] = null;
 			spaceManager.Map = fakeMap;
 
-			Exception expected = new InvalidOperationException("The space to move from is empty. An element must exist on the space to move it");
+			Exception expected = new InvalidOperationException("The space to move from is empty. An element must exist on the space in order to move it");
 
 			Exception actual = Assert.Throws<InvalidOperationException>(() => {
 				spaceManager.Move(new Entities.Space(0, 0), new Entities.Space(1, 1));
@@ -458,7 +458,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager.Map = fakeMap;
 
-			Exception expected = new ArgumentNullException("from", "The space to move from cannot be null.");
+			Exception expected = new ArgumentNullException("from", "A required argument was null");
 
 			Exception actual = Assert.Throws<ArgumentNullException>(() => {
 				spaceManager.Move(null, new Entities.Space(1, 1));
@@ -472,7 +472,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager.Map = fakeMap;
 
-			Exception expected = new ArgumentNullException("to", "The space to move to cannot be null.");
+			Exception expected = new ArgumentNullException("to", "A required argument was null");
 
 			Exception actual = Assert.Throws<ArgumentNullException>(() => {
 				spaceManager.Move(new Entities.Space(0, 0), null);
