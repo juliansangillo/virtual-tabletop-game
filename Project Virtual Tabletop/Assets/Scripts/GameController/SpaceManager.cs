@@ -6,9 +6,6 @@ using ProjectVirtualTabletop.GameController.Interfaces;
 
 namespace ProjectVirtualTabletop.GameController {
 	public class SpaceManager : ISpaceManager {
-		private const int rowDimension = 0;
-		private const int columnDimension = 1;
-
 		public Element[,] Map { get; set; }
 
 		public void AddTo(Space space, Element element) {
@@ -63,11 +60,11 @@ namespace ProjectVirtualTabletop.GameController {
 		}
 
 		private bool IsRowOutOfBounds(int row) {
-			return row >= Map.GetLength(rowDimension);
+			return row >= Map.GetLength(AppConstants.ROW_DIMENSION);
 		}
 
 		private bool IsColumnOutOfBounds(int column) {
-			return column >= Map.GetLength(columnDimension);
+			return column >= Map.GetLength(AppConstants.COLUMN_DIMENSION);
 		}
 
 		private void ThrowExceptionIfArgumentIsNull(object arg, string paramName, string message) {
