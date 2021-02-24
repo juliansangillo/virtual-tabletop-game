@@ -17,7 +17,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		SpaceManager spaceManager;
 
 		[Test]
-		public void AddTo_GivenValidSpaceThatExistsOnMapAndAnElement_SetElementToCorrectLocationOnMap() {
+		public void AddTo_GivenSpaceAndAnElement_SetElementToCorrectLocationOnMap() {
 			Element expected = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			fakeMap[0,0] = null;
@@ -34,7 +34,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void AddTo_GivenValidSpaceWhereAnElementIsLocatedOnIt_ThrowInvalidOperationException() {
+		public void AddTo_GivenSpaceWhereAnElementIsAlreadyLocatedOnIt_ThrowInvalidOperationException() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			fakeMap[0,0] = null;
@@ -77,7 +77,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void AddTo_GivenValidSpaceWhereRowDoesNotExistOnMap_ThrowArgumentException() {
+		public void AddTo_GivenSpaceWhereRowDoesNotExistOnMap_ThrowArgumentException() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -89,7 +89,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void AddTo_GivenValidSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentException() {
+		public void AddTo_GivenSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentException() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -125,7 +125,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void GetElementOn_GivenValidSpaceThatExistsOnMap_ReturnCorrectElement() {
+		public void GetElementOn_GivenSpace_ReturnCorrectElement() {
 			Element expected = new Element();
 			Element notExpected = new Element();
 			Element[,] fakeMap = new Element[2,2];
@@ -152,7 +152,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void GetElementOn_GivenValidSpaceWhereRowDoesNotExistOnMap_ThrowArgumentException() {
+		public void GetElementOn_GivenSpaceWhereRowDoesNotExistOnMap_ThrowArgumentException() {
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
 			Entities.Space nonExistingSpace = new Entities.Space(5, 1);
@@ -163,7 +163,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void GetElementOn_GivenValidSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentException() {
+		public void GetElementOn_GivenSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentException() {
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
 			Entities.Space nonExistingSpace = new Entities.Space(1, 5);
@@ -196,7 +196,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void IsEmpty_GivenValidSpaceThatExistsOnMapAndSpaceIsEmpty_ReturnTrue() {
+		public void IsEmpty_GivenSpaceThatExistsOnMapAndSpaceIsEmpty_ReturnTrue() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			fakeMap[0,0] = element;
@@ -212,7 +212,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void IsEmpty_GivenValidSpaceThatExistsOnMapAndSpaceIsNotEmpty_ReturnFalse() {
+		public void IsEmpty_GivenSpaceThatExistsOnMapAndSpaceIsNotEmpty_ReturnFalse() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			fakeMap[0,0] = element;
@@ -238,7 +238,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void IsEmpty_GivenValidSpaceWhereRowDoesNotExistOnMap_ThrowArgumentException() {
+		public void IsEmpty_GivenSpaceWhereRowDoesNotExistOnMap_ThrowArgumentException() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -250,7 +250,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void IsEmpty_GivenValidSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentException() {
+		public void IsEmpty_GivenSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentException() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -286,7 +286,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void Move_GivenTwoValidSpacesWhereAnElementIsLocatedOnTheFirstSpaceAndTheSecondSpaceIsEmpty_MoveElementFromTheFirstSpaceToTheSecondSpace() {
+		public void Move_GivenTwoSpacesWhereAnElementIsLocatedOnTheFirstSpaceAndTheSecondSpaceIsEmpty_MoveElementFromTheFirstSpaceToTheSecondSpace() {
 			Element expected = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			fakeMap[0,0] = expected;
@@ -302,7 +302,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void Move_GivenTwoValidSpacesWhereAnElementIsLocatedOnTheSecondSpace_ThrowInvalidOperationExceptionWithCorrectMessage() {
+		public void Move_GivenTwoSpacesWhereAnElementIsAlreadyLocatedOnTheSecondSpace_ThrowInvalidOperationExceptionWithCorrectMessage() {
 			Element element1 = new Element();
 			Element element2 = new Element();
 			Element[,] fakeMap = new Element[2,2];
@@ -321,7 +321,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void Move_GivenTwoValidSpacesWhereTheFirstSpaceIsEmpty_ThrowInvalidOperationExceptionWithCorrectMessage() {
+		public void Move_GivenTwoSpacesWhereTheFirstSpaceIsEmpty_ThrowInvalidOperationExceptionWithCorrectMessage() {
 			Element[,] fakeMap = new Element[2,2];
 			fakeMap[0,0] = null;
 			fakeMap[0,1] = null;
@@ -338,7 +338,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void Move_GivenValidFromSpaceWhereRowDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
+		public void Move_GivenFirstSpaceWhereRowDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -353,7 +353,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void Move_GivenValidFromSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
+		public void Move_GivenFirstSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -368,7 +368,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void Move_GivenValidToSpaceWhereRowDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
+		public void Move_GivenSecondSpaceWhereRowDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -383,7 +383,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void Move_GivenValidToSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
+		public void Move_GivenSecondSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -398,7 +398,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void Move_GivenInvalidFromSpaceWhereRowIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
+		public void Move_GivenInvalidFirstSpaceWhereRowIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -413,7 +413,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void Move_GivenInvalidFromSpaceWhereColumnIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
+		public void Move_GivenInvalidFirstSpaceWhereColumnIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -428,7 +428,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void Move_GivenInvalidToSpaceWhereRowIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
+		public void Move_GivenInvalidSecondSpaceWhereRowIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -443,7 +443,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void Move_GivenInvalidToSpaceWhereColumnIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
+		public void Move_GivenInvalidSecondSpaceWhereColumnIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -458,7 +458,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void Move_GivenNullFromSpace_ThrowArgumentNullExceptionWithCorrectMessage() {
+		public void Move_GivenNullFirstSpace_ThrowArgumentNullExceptionWithCorrectMessage() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -472,7 +472,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void Move_GivenNullToSpace_ThrowArgumentNullExceptionWithCorrectMessage() {
+		public void Move_GivenNullSecondSpace_ThrowArgumentNullExceptionWithCorrectMessage() {
 			Element element = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
@@ -486,7 +486,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void RemoveFrom_GivenValidSpaceWhereAnElementExistsOnThatSpace_RemoveElementFromThatSpaceAndReturnTheElement() {
+		public void RemoveFrom_GivenSpace_RemoveElementFromThatSpaceAndReturnTheElement() {
 			Element expected = new Element();
 			Element[,] fakeMap = new Element[2,2];
 			fakeMap[0,0] = null;
@@ -502,7 +502,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void RemoveFrom_GivenValidSpaceWhereAnElementDoesNotExistOnThatSpace_ThrowInvalidOperationException() {
+		public void RemoveFrom_GivenSpaceWhereAnElementDoesNotExistOnThatSpace_ThrowInvalidOperationException() {
 			Element[,] fakeMap = new Element[2,2];
 			fakeMap[0,0] = null;
 			fakeMap[0,1] = null;
@@ -516,7 +516,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void RemoveFrom_GivenValidSpaceWhereRowDoesNotExistOnMap_ThrowArgumentException() {
+		public void RemoveFrom_GivenSpaceWhereRowDoesNotExistOnMap_ThrowArgumentException() {
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
 			Entities.Space nonExistingSpace = new Entities.Space(5, 1);
@@ -527,7 +527,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		}
 
 		[Test]
-		public void RemoveFrom_GivenValidSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentException() {
+		public void RemoveFrom_GivenSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentException() {
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager = new SpaceManager(fakeMap);
 			Entities.Space nonExistingSpace = new Entities.Space(1, 5);
