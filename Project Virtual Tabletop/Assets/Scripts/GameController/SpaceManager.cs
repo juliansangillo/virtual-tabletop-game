@@ -6,7 +6,11 @@ using ProjectVirtualTabletop.GameController.Interfaces;
 
 namespace ProjectVirtualTabletop.GameController {
 	public class SpaceManager : ISpaceManager {
-		public Element[,] Map { get; set; }
+		public SpaceManager(Element[,] map) {
+			this.Map = map;
+		}
+
+		public Element[,] Map { get; }
 
 		public void AddTo(Space space, Element element) {
 			ThrowExceptionIfArgumentIsNull(space, "space", ExceptionConstants.VA_ARGUMENT_NULL);
