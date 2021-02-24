@@ -1,5 +1,3 @@
-using System;
-
 namespace ProjectVirtualTabletop.Entities {
 	public class Space {
 		public int Row { get; set; }

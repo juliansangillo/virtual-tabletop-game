@@ -1,12 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
-using NaughtyBiker.Editor.Tests;
+﻿using NUnit.Framework;
 using ProjectVirtualTabletop.GameController;
-using ProjectVirtualTabletop.GameController.Interfaces;
-using ProjectVirtualTabletop.GameController.Installers;
 using ProjectVirtualTabletop.Entities;
 using System;
 using ProjectVirtualTabletop.Exceptions;
