@@ -1,10 +1,9 @@
 using System;
+using ProjectVirtualTabletop.Constants;
 
 namespace ProjectVirtualTabletop.Exceptions {
 	public class InvalidSpaceException : Exception {
-		private const string defaultMessage = "Space is invalid. Please verify neither the row or column are negative and try again.";
-
-		public InvalidSpaceException() : base(defaultMessage) {}
+		public InvalidSpaceException() : base(ExceptionConstants.VA_SPACE_INVALID_DEFAULT) {}
 		public InvalidSpaceException(string message) : base(message) {}
 	}
 }

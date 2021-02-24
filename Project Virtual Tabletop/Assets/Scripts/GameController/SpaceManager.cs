@@ -1,4 +1,5 @@
 using System;
+using ProjectVirtualTabletop.Constants;
 using ProjectVirtualTabletop.Entities;
 using ProjectVirtualTabletop.Exceptions;
 using ProjectVirtualTabletop.GameController.Interfaces;
@@ -11,54 +12,50 @@ namespace ProjectVirtualTabletop.GameController {
 		public Element[,] Map { get; set; }
 
 		public void AddTo(Space space, Element element) {
-			ThrowExceptionIfArgumentIsNull(space, "space", "A required argument was null");
-			ThrowExceptionIfArgumentIsNull(element, "element", "A required argument was null");
+			ThrowExceptionIfArgumentIsNull(space, "space", ExceptionConstants.VA_ARGUMENT_NULL);
+			ThrowExceptionIfArgumentIsNull(element, "element", ExceptionConstants.VA_ARGUMENT_NULL);
 			ThrowExceptionIfSpaceIsInvalid(space);
-			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", "Space doesn't exist on map");
-			ThrowExceptionIfAnElementExistsOnSpace(space, "Space is not empty. A space must be unoccupied in order to add an element to it. " +
-					"Please remove the existing element from this space first before adding another element.");
+			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
+			ThrowExceptionIfAnElementExistsOnSpace(space, ExceptionConstants.VA_ELEMENT_EXISTS_ON_SPACE);
 
 			Map[space.Row, space.Column] = element;
 		}
 
 		public Element GetElementOn(Space space) {
-			ThrowExceptionIfArgumentIsNull(space, "space", "A required argument was null");
+			ThrowExceptionIfArgumentIsNull(space, "space", ExceptionConstants.VA_ARGUMENT_NULL);
 			ThrowExceptionIfSpaceIsInvalid(space);
-			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", "Space doesn't exist on map");
+			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
 
 			return Map[space.Row,space.Column];
 		}
 
 		public bool IsEmpty(Space space) {
-			ThrowExceptionIfArgumentIsNull(space, "space", "A required argument was null");
+			ThrowExceptionIfArgumentIsNull(space, "space", ExceptionConstants.VA_ARGUMENT_NULL);
 			ThrowExceptionIfSpaceIsInvalid(space);
-			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", "Space doesn't exist on map");
+			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
 
 			return Map[space.Row, space.Column] == null;
 		}
 
 		public void Move(Space from, Space to) {
-			ThrowExceptionIfArgumentIsNull(from, "from", "A required argument was null");
-			ThrowExceptionIfArgumentIsNull(to, "to", "A required argument was null");
-			ThrowExceptionIfSpaceIsInvalid(from, "The space to move from is invalid. Please verify neither the row or column " +
-				"are negative and try again.");
-			ThrowExceptionIfSpaceIsInvalid(to, "The space to move to is invalid. Please verify neither the row or column " +
-				"are negative and try again.");
-			ThrowExceptionIfSpaceIsOutOfBounds(from, "from", "The space to move from does not exist on map");
-			ThrowExceptionIfSpaceIsOutOfBounds(to, "to", "The space to move to does not exist on map");
-			ThrowExceptionIfAnElementDoesNotExistOnSpace(from, "The space to move from is empty. An element must exist on the space in order to move it");
-			ThrowExceptionIfAnElementExistsOnSpace(to, "The space to move to is not empty. A space must be unoccupied in order to add an element to it. " +
-					"Please remove the existing element from this space first before adding another element.");
+			ThrowExceptionIfArgumentIsNull(from, "from", ExceptionConstants.VA_ARGUMENT_NULL);
+			ThrowExceptionIfArgumentIsNull(to, "to", ExceptionConstants.VA_ARGUMENT_NULL);
+			ThrowExceptionIfSpaceIsInvalid(from, "from", ExceptionConstants.VA_SPACE_INVALID);
+			ThrowExceptionIfSpaceIsInvalid(to, "to", ExceptionConstants.VA_SPACE_INVALID);
+			ThrowExceptionIfSpaceIsOutOfBounds(from, "from", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
+			ThrowExceptionIfSpaceIsOutOfBounds(to, "to", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
+			ThrowExceptionIfAnElementDoesNotExistOnSpace(from, ExceptionConstants.VA_ELEMENT_DOESNT_EXIST_ON_SPACE);
+			ThrowExceptionIfAnElementExistsOnSpace(to, ExceptionConstants.VA_ELEMENT_EXISTS_ON_SPACE);
 
 			Map[to.Row, to.Column] = Map[from.Row, from.Column];
 			Map[from.Row, from.Column] = null;
 		}
 
 		public Element RemoveFrom(Space space) {
-			ThrowExceptionIfArgumentIsNull(space, "space", "A required argument was null");
+			ThrowExceptionIfArgumentIsNull(space, "space", ExceptionConstants.VA_ARGUMENT_NULL);
 			ThrowExceptionIfSpaceIsInvalid(space);
-			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", "Space doesn't exist on map");
-			ThrowExceptionIfAnElementDoesNotExistOnSpace(space, "The space is empty. An element must exist on the space in order to remove it");
+			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
+			ThrowExceptionIfAnElementDoesNotExistOnSpace(space, ExceptionConstants.VA_ELEMENT_DOESNT_EXIST_ON_SPACE);
 
 			Element element = Map[space.Row, space.Column];
 			Map[space.Row, space.Column] = null;
@@ -83,9 +80,9 @@ namespace ProjectVirtualTabletop.GameController {
 				throw new InvalidSpaceException();
 		}
 
-		private void ThrowExceptionIfSpaceIsInvalid(Space space, string message) {
+		private void ThrowExceptionIfSpaceIsInvalid(Space space, string paramName, string message) {
 			if(!space.IsValid())
-				throw new InvalidSpaceException(message);
+				throw new InvalidSpaceException(string.Format(message, paramName));
 		}
 
 		private void ThrowExceptionIfSpaceIsOutOfBounds(Space space, string paramName, string message) {

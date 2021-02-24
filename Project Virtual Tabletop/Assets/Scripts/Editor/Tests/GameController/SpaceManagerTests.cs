@@ -10,6 +10,7 @@ using ProjectVirtualTabletop.GameController.Installers;
 using ProjectVirtualTabletop.Entities;
 using System;
 using ProjectVirtualTabletop.Exceptions;
+using ProjectVirtualTabletop.Constants;
 
 namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 	public class SpaceManagerTests : ZenjectTests {
@@ -59,7 +60,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager.Map = fakeMap;
 
-			Exception expected = new ArgumentNullException("space", "A required argument was null");
+			Exception expected = new ArgumentNullException("space", ExceptionConstants.VA_ARGUMENT_NULL);
 
 			Exception actual = Assert.Throws<ArgumentNullException>(() => {
 				spaceManager.AddTo(null, element);
@@ -73,7 +74,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			spaceManager.Map = fakeMap;
 			Entities.Space space = new Entities.Space(1, 1);
 
-			Exception expected = new ArgumentNullException("element", "A required argument was null");
+			Exception expected = new ArgumentNullException("element", ExceptionConstants.VA_ARGUMENT_NULL);
 
 			Exception actual = Assert.Throws<ArgumentNullException>(() => {
 				spaceManager.AddTo(space, null);
@@ -317,8 +318,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			fakeMap[1,1] = element2;
 			spaceManager.Map = fakeMap;
 
-			Exception expected = new InvalidOperationException("The space to move to is not empty. A space must be unoccupied in order to add an element to it. " +
-				"Please remove the existing element from this space first before adding another element.");
+			Exception expected = new InvalidOperationException(ExceptionConstants.VA_ELEMENT_EXISTS_ON_SPACE);
 
 			Exception actual = Assert.Throws<InvalidOperationException>(() => {
 				spaceManager.Move(new Entities.Space(0, 0), new Entities.Space(1, 1));
@@ -335,7 +335,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			fakeMap[1,1] = null;
 			spaceManager.Map = fakeMap;
 
-			Exception expected = new InvalidOperationException("The space to move from is empty. An element must exist on the space in order to move it");
+			Exception expected = new InvalidOperationException(ExceptionConstants.VA_ELEMENT_DOESNT_EXIST_ON_SPACE);
 
 			Exception actual = Assert.Throws<InvalidOperationException>(() => {
 				spaceManager.Move(new Entities.Space(0, 0), new Entities.Space(1, 1));
@@ -350,7 +350,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			spaceManager.Map = fakeMap;
 			Entities.Space nonExistingSpace = new Entities.Space(5, 1);
 
-			Exception expected = new ArgumentException("The space to move from does not exist on map", "from");
+			Exception expected = new ArgumentException(ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS, "from");
 
 			Exception actual = Assert.Throws<ArgumentException>(() => {
 				spaceManager.Move(nonExistingSpace, new Entities.Space(1, 1));
@@ -365,7 +365,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			spaceManager.Map = fakeMap;
 			Entities.Space nonExistingSpace = new Entities.Space(1, 5);
 
-			Exception expected = new ArgumentException("The space to move from does not exist on map", "from");
+			Exception expected = new ArgumentException(ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS, "from");
 
 			Exception actual = Assert.Throws<ArgumentException>(() => {
 				spaceManager.Move(nonExistingSpace, new Entities.Space(1, 1));
@@ -380,7 +380,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			spaceManager.Map = fakeMap;
 			Entities.Space nonExistingSpace = new Entities.Space(5, 1);
 
-			Exception expected = new ArgumentException("The space to move to does not exist on map", "to");
+			Exception expected = new ArgumentException(ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS, "to");
 
 			Exception actual = Assert.Throws<ArgumentException>(() => {
 				spaceManager.Move(new Entities.Space(0, 0), nonExistingSpace);
@@ -395,7 +395,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			spaceManager.Map = fakeMap;
 			Entities.Space nonExistingSpace = new Entities.Space(1, 5);
 
-			Exception expected = new ArgumentException("The space to move to does not exist on map", "to");
+			Exception expected = new ArgumentException(ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS, "to");
 
 			Exception actual = Assert.Throws<ArgumentException>(() => {
 				spaceManager.Move(new Entities.Space(0, 0), nonExistingSpace);
@@ -410,8 +410,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			spaceManager.Map = fakeMap;
 			Entities.Space invalidSpace = new Entities.Space(-1, 0);
 
-			Exception expected = new InvalidSpaceException("The space to move from is invalid. Please verify neither the row or column " +
-				"are negative and try again.");
+			Exception expected = new InvalidSpaceException(string.Format(ExceptionConstants.VA_SPACE_INVALID, "from"));
 
 			Exception actual = Assert.Throws<InvalidSpaceException>(() => {
 				spaceManager.Move(invalidSpace, new Entities.Space(1, 1));
@@ -426,8 +425,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			spaceManager.Map = fakeMap;
 			Entities.Space invalidSpace = new Entities.Space(0, -1);
 
-			Exception expected = new InvalidSpaceException("The space to move from is invalid. Please verify neither the row or column " +
-				"are negative and try again.");
+			Exception expected = new InvalidSpaceException(string.Format(ExceptionConstants.VA_SPACE_INVALID, "from"));
 
 			Exception actual = Assert.Throws<InvalidSpaceException>(() => {
 				spaceManager.Move(invalidSpace, new Entities.Space(1, 1));
@@ -442,8 +440,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			spaceManager.Map = fakeMap;
 			Entities.Space invalidSpace = new Entities.Space(-1, 0);
 
-			Exception expected = new InvalidSpaceException("The space to move to is invalid. Please verify neither the row or column " +
-				"are negative and try again.");
+			Exception expected = new InvalidSpaceException(string.Format(ExceptionConstants.VA_SPACE_INVALID, "to"));
 
 			Exception actual = Assert.Throws<InvalidSpaceException>(() => {
 				spaceManager.Move(new Entities.Space(0, 0), invalidSpace);
@@ -458,8 +455,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			spaceManager.Map = fakeMap;
 			Entities.Space invalidSpace = new Entities.Space(0, -1);
 
-			Exception expected = new InvalidSpaceException("The space to move to is invalid. Please verify neither the row or column " +
-				"are negative and try again.");
+			Exception expected = new InvalidSpaceException(string.Format(ExceptionConstants.VA_SPACE_INVALID, "to"));
 
 			Exception actual = Assert.Throws<InvalidSpaceException>(() => {
 				spaceManager.Move(new Entities.Space(0, 0), invalidSpace);
@@ -473,7 +469,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager.Map = fakeMap;
 
-			Exception expected = new ArgumentNullException("from", "A required argument was null");
+			Exception expected = new ArgumentNullException("from", ExceptionConstants.VA_ARGUMENT_NULL);
 
 			Exception actual = Assert.Throws<ArgumentNullException>(() => {
 				spaceManager.Move(null, new Entities.Space(1, 1));
@@ -487,7 +483,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 			Element[,] fakeMap = new Element[2,2];
 			spaceManager.Map = fakeMap;
 
-			Exception expected = new ArgumentNullException("to", "A required argument was null");
+			Exception expected = new ArgumentNullException("to", ExceptionConstants.VA_ARGUMENT_NULL);
 
 			Exception actual = Assert.Throws<ArgumentNullException>(() => {
 				spaceManager.Move(new Entities.Space(0, 0), null);
