@@ -5,12 +5,12 @@ using ProjectVirtualTabletop.Exceptions;
 using ProjectVirtualTabletop.GameController.Interfaces;
 
 namespace ProjectVirtualTabletop.GameController {
-	public class SpaceManager : ISpaceManager {
-		public SpaceManager(Element[,] map) {
-			this.Map = map;
+	public class GridManager : IGridManager {
+		public Element[,] Grid { get; }
+		
+		public GridManager(Element[,] grid) {
+			this.Grid = grid;
 		}
-
-		public Element[,] Map { get; }
 
 		public void AddTo(Space space, Element element) {
 			ThrowExceptionIfArgumentIsNull(space, "space", ExceptionConstants.VA_ARGUMENT_NULL);
@@ -19,7 +19,7 @@ namespace ProjectVirtualTabletop.GameController {
 			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
 			ThrowExceptionIfAnElementExistsOnSpace(space, ExceptionConstants.VA_ELEMENT_EXISTS_ON_SPACE);
 
-			Map[space.Row, space.Column] = element;
+			Grid[space.Row, space.Column] = element;
 		}
 
 		public Element GetElementOn(Space space) {
@@ -27,7 +27,7 @@ namespace ProjectVirtualTabletop.GameController {
 			ThrowExceptionIfSpaceIsInvalid(space);
 			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
 
-			return Map[space.Row,space.Column];
+			return Grid[space.Row,space.Column];
 		}
 
 		public bool IsEmpty(Space space) {
@@ -35,7 +35,7 @@ namespace ProjectVirtualTabletop.GameController {
 			ThrowExceptionIfSpaceIsInvalid(space);
 			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
 
-			return Map[space.Row, space.Column] == null;
+			return Grid[space.Row, space.Column] == null;
 		}
 
 		public void Move(Space from, Space to) {
@@ -48,8 +48,8 @@ namespace ProjectVirtualTabletop.GameController {
 			ThrowExceptionIfAnElementDoesNotExistOnSpace(from, ExceptionConstants.VA_ELEMENT_DOESNT_EXIST_ON_SPACE);
 			ThrowExceptionIfAnElementExistsOnSpace(to, ExceptionConstants.VA_ELEMENT_EXISTS_ON_SPACE);
 
-			Map[to.Row, to.Column] = Map[from.Row, from.Column];
-			Map[from.Row, from.Column] = null;
+			Grid[to.Row, to.Column] = Grid[from.Row, from.Column];
+			Grid[from.Row, from.Column] = null;
 		}
 
 		public Element RemoveFrom(Space space) {
@@ -58,17 +58,17 @@ namespace ProjectVirtualTabletop.GameController {
 			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
 			ThrowExceptionIfAnElementDoesNotExistOnSpace(space, ExceptionConstants.VA_ELEMENT_DOESNT_EXIST_ON_SPACE);
 
-			Element element = Map[space.Row, space.Column];
-			Map[space.Row, space.Column] = null;
+			Element element = Grid[space.Row, space.Column];
+			Grid[space.Row, space.Column] = null;
 			return element;
 		}
 
 		private bool IsRowOutOfBounds(int row) {
-			return row >= Map.GetLength(AppConstants.ROW_DIMENSION);
+			return row >= Grid.GetLength(AppConstants.ROW_DIMENSION);
 		}
 
 		private bool IsColumnOutOfBounds(int column) {
-			return column >= Map.GetLength(AppConstants.COLUMN_DIMENSION);
+			return column >= Grid.GetLength(AppConstants.COLUMN_DIMENSION);
 		}
 
 		private void ThrowExceptionIfArgumentIsNull(object arg, string paramName, string message) {
@@ -92,12 +92,12 @@ namespace ProjectVirtualTabletop.GameController {
 		}
 
 		private void ThrowExceptionIfAnElementDoesNotExistOnSpace(Space space, string message) {
-			if(Map[space.Row, space.Column] == null)
+			if(Grid[space.Row, space.Column] == null)
 				throw new InvalidOperationException(message);
 		}
 
 		private void ThrowExceptionIfAnElementExistsOnSpace(Space space, string message) {
-			if(Map[space.Row, space.Column] != null)
+			if(Grid[space.Row, space.Column] != null)
 				throw new InvalidOperationException(message);
 		}
 	}

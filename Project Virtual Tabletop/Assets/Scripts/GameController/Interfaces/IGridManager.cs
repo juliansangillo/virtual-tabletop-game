@@ -1,7 +1,7 @@
 using ProjectVirtualTabletop.Entities;
 
 namespace ProjectVirtualTabletop.GameController.Interfaces {
-	public interface ISpaceManager {
+	public interface IGridManager {
 		void AddTo(Space space, Element element);
 		Element GetElementOn(Space space);
 		bool IsEmpty(Space space);
