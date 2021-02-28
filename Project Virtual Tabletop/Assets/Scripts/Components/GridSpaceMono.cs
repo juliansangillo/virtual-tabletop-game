@@ -1,11 +1,11 @@
-﻿using UnityEngine;
-using Space = ProjectVirtualTabletop.Entities.Space;
+﻿using ProjectVirtualTabletop.Entities;
+using UnityEngine;
 
-public class SpaceMono : MonoBehaviour {
+public class GridSpaceMono : MonoBehaviour {
 	[SerializeField] private int row;
     [SerializeField] private int col;
 
-    private Space space;
+    private GridSpace space;
 
     public int Row {
         set {
@@ -19,13 +19,13 @@ public class SpaceMono : MonoBehaviour {
         }
     }
     
-    public Space Space {
+    public GridSpace Space {
         get {
             return this.space;
         }
     }
     
     public void Awake() {
-        space = new Space(row, col);
+        space = new GridSpace(row, col);
 	}
 }

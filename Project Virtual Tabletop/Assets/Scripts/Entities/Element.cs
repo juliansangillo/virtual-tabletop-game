@@ -1,8 +1,8 @@
 namespace ProjectVirtualTabletop.Entities {
 	public class Element {
-		public Space CurrentSpace { get; set; }
+		public GridSpace CurrentSpace { get; set; }
 		
-		public Element(Space space) {
+		public Element(GridSpace space) {
 			this.CurrentSpace = space;
 		}
 	}

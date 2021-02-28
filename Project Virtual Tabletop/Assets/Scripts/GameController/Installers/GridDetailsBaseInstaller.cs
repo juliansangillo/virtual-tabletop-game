@@ -11,7 +11,7 @@ namespace ProjectVirtualTabletop.GameController.Installers {
 		}
 
         private GridDetails GetTemporaryGridDetails() {
-            Token token = new Token(new Space(9, 9));
+            Token token = new Token(new GridSpace(9, 9));
 
             GridDetails gridDetails = new GridDetails();
             gridDetails.NumberOfRows = 10;

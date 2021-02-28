@@ -1,9 +1,9 @@
 namespace ProjectVirtualTabletop.Entities {
-	public class Space {
+	public class GridSpace {
 		public int Row { get; set; }
 		public int Column { get; set; }
 
-		public Space(int row, int column) {
+		public GridSpace(int row, int column) {
 			this.Row = row;
 			this.Column = column;
 		}

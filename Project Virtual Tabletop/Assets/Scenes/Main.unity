@@ -1016,7 +1016,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2b44319812d0f900859f5c714dc016f, type: 3}
+  m_Script: {fileID: 11500000, guid: 2e09d9bf8b1e7195095279995709a10f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &620556207
@@ -2556,7 +2556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97c41bf2e996982079b66694d4d0e7ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spaceMono: {fileID: 559065703}
+  gridSpaceMono: {fileID: 559065703}
   maxHeight: 1
   lerpDelta: 0.1
 --- !u!1001 &7763358831214450327

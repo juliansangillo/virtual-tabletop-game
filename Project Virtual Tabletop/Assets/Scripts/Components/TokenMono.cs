@@ -5,10 +5,9 @@ using ProjectVirtualTabletop.Entities;
 using ProjectVirtualTabletop.GameController.Interfaces;
 using UnityEngine;
 using Zenject;
-using Space = ProjectVirtualTabletop.Entities.Space;
 
 public class TokenMono : MonoBehaviour {
-	[SerializeField] private SpaceMono spaceMono;
+	[SerializeField] private GridSpaceMono gridSpaceMono;
     [SerializeField] private int maxHeight;
     [SerializeField] [Range(0, 1)] private float lerpDelta;
 
@@ -17,9 +16,9 @@ public class TokenMono : MonoBehaviour {
 
     private IGridManager gridManager;
 
-    public SpaceMono SpaceMono {
+    public GridSpaceMono GridSpaceMono {
         set {
-            this.spaceMono = value;
+            this.gridSpaceMono = value;
         }
     }
 
@@ -47,7 +46,7 @@ public class TokenMono : MonoBehaviour {
     }
 
     public void Start() {
-        token = (Token)gridManager.GetElementOn(spaceMono.Space);
+        token = (Token)gridManager.GetElementOn(gridSpaceMono.Space);
         initialPosition = transform.position;
     }
 
@@ -83,7 +82,7 @@ public class TokenMono : MonoBehaviour {
         RaycastHit hit = Physics.RaycastAll(ray).FirstOrDefault(h => h.collider.tag == "Tile");
 
         if(hit.collider != null) {
-            Space newSpace = hit.collider.GetComponent<SpaceMono>().Space;
+            GridSpace newSpace = hit.collider.GetComponent<GridSpaceMono>().Space;
 
             if(gridManager.IsEmpty(newSpace)) {
                 gridManager.Move(token.CurrentSpace, newSpace);

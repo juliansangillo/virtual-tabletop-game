@@ -17,7 +17,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
         [TestCase(5,3,0,0)]
         [TestCase(10,10,9,9)]
 		public void CreateGridManager_GivenGridDetailsWithOneToken_ReturnACorrectGridManager(int numRows, int numColumns, int row1, int col1) {
-            Token token1 = new Token(new Space(row1, col1));
+            Token token1 = new Token(new GridSpace(row1, col1));
 			GridDetails gridDetails = new GridDetails();
             gridDetails.NumberOfRows = numRows;
             gridDetails.NumberOfColumns = numColumns;
@@ -34,9 +34,9 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
 		[TestCase(5,3,0,0,4,0,4,2)]
 		public void CreateGridManager_GivenGridDetailsWithThreeTokens_ReturnACorrectGridManager(int numRows, int numColumns, int row1, int col1, 
         int row2, int col2, int row3, int col3) {
-            Token token1 = new Token(new Space(row1, col1));
-            Token token2 = new Token(new Space(row2, col2));
-            Token token3 = new Token(new Space(row3, col3));
+            Token token1 = new Token(new GridSpace(row1, col1));
+            Token token2 = new Token(new GridSpace(row2, col2));
+            Token token3 = new Token(new GridSpace(row3, col3));
 			GridDetails gridDetails = new GridDetails();
             gridDetails.NumberOfRows = numRows;
             gridDetails.NumberOfColumns = numColumns;
@@ -57,7 +57,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
         [TestCase(0)]
         [TestCase(-1)]
         public void CreateGridManager_GivenInvalidGridDetailsWhereNumberOfRowsAreZeroOrNegative_ThrowArgumentException(int numRows) {
-            Token token1 = new Token(new Space(0, 0));
+            Token token1 = new Token(new GridSpace(0, 0));
             GridDetails gridDetails = new GridDetails();
             gridDetails.NumberOfRows = numRows;
             gridDetails.NumberOfColumns = 1;
@@ -78,7 +78,7 @@ namespace ProjectVirtualTabletop.Editor.Tests.GameController {
         [TestCase(0)]
         [TestCase(-1)]
         public void CreateGridManager_GivenInvalidGridDetailsWhereNumberOfColumnsAreZeroOrNegative_ThrowArgumentException(int numColumns) {
-            Token token1 = new Token(new Space(0, 0));
+            Token token1 = new Token(new GridSpace(0, 0));
             GridDetails gridDetails = new GridDetails();
             gridDetails.NumberOfRows = 1;
             gridDetails.NumberOfColumns = numColumns;

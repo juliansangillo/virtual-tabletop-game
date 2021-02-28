@@ -2,10 +2,10 @@ using ProjectVirtualTabletop.Entities;
 
 namespace ProjectVirtualTabletop.GameController.Interfaces {
 	public interface IGridManager {
-		void AddTo(Space space, Element element);
-		Element GetElementOn(Space space);
-		bool IsEmpty(Space space);
-		void Move(Space from, Space to);
-		Element RemoveFrom(Space space);
+		void AddTo(GridSpace space, Element element);
+		Element GetElementOn(GridSpace space);
+		bool IsEmpty(GridSpace space);
+		void Move(GridSpace from, GridSpace to);
+		Element RemoveFrom(GridSpace space);
 	}
 }
