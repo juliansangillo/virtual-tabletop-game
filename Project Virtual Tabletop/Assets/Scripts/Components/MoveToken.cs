@@ -6,7 +6,7 @@ using ProjectVirtualTabletop.GameController.Interfaces;
 using UnityEngine;
 using Zenject;
 
-public class TokenMono : MonoBehaviour {
+public class MoveToken : MonoBehaviour {
 	[SerializeField] private GridSpaceMono gridSpaceMono;
     [SerializeField] private int maxHeight;
     [SerializeField] [Range(0, 1)] private float lerpDelta;
