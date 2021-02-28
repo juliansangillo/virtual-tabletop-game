@@ -2557,8 +2557,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spaceMono: {fileID: 559065703}
-  deltaY: 1
-  deltaRotateX: 25
+  maxHeight: 1
+  lerpDelta: 0.1
 --- !u!1001 &7763358831214450327
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -9,14 +9,13 @@ using Space = ProjectVirtualTabletop.Entities.Space;
 
 public class TokenMono : MonoBehaviour {
 	[SerializeField] private SpaceMono spaceMono;
-    [SerializeField] private int deltaY;
+    [SerializeField] private int maxHeight;
+    [SerializeField] [Range(0, 1)] private float lerpDelta;
 
     private Token token;
     private Vector3 initialPosition;
 
     private IGridManager gridManager;
-
-    
 
     public SpaceMono SpaceMono {
         set {
@@ -24,9 +23,15 @@ public class TokenMono : MonoBehaviour {
         }
     }
 
-    public int DeltaY {
+    public int MaxHeight {
         set {
-            this.deltaY = value;
+            this.maxHeight = value;
+        }
+    }
+
+    public float LerpDelta {
+        set {
+            this.lerpDelta = value;
         }
     }
 
@@ -47,7 +52,20 @@ public class TokenMono : MonoBehaviour {
     }
 
     public void OnMouseDown() {
-        transform.Translate(Vector3.up * deltaY);
+        StartCoroutine(TranslateUp());
+    }
+
+    private IEnumerator TranslateUp() {
+        float lerpPosition = 0f;
+        do {
+            lerpPosition += lerpDelta;
+            if(lerpPosition >= 1f)
+                lerpPosition = 1f;
+
+            transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, maxHeight, transform.position.z), lerpPosition);
+
+            yield return null;
+        } while(lerpPosition < 1f);
     }
 
     public void OnMouseDrag() {
@@ -70,13 +88,27 @@ public class TokenMono : MonoBehaviour {
             if(gridManager.IsEmpty(newSpace)) {
                 gridManager.Move(token.CurrentSpace, newSpace);
                 token.CurrentSpace = newSpace;
-                transform.Translate(Vector3.down * deltaY);
-                initialPosition = transform.position;
+                StartCoroutine(TranslateDown());
             }
             else
                 transform.position = initialPosition;
         }
         else
             transform.position = initialPosition;
+    }
+
+    private IEnumerator TranslateDown() {
+        float lerpPosition = 0f;
+        do {
+            lerpPosition += lerpDelta;
+            if(lerpPosition >= 1f)
+                lerpPosition = 1f;
+
+            transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, 0, transform.position.z), lerpPosition);
+
+            yield return null;
+        } while(lerpPosition < 1f);
+
+        initialPosition = transform.position;
     }
 }
