@@ -1,10 +1,10 @@
 using System;
-using ProjectVirtualTabletop.Constants;
-using ProjectVirtualTabletop.Entities;
-using ProjectVirtualTabletop.Exceptions;
-using ProjectVirtualTabletop.GameController.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
+using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
+using NaughtyBikerGames.ProjectVirtualTabletop.Exceptions;
+using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
 
-namespace ProjectVirtualTabletop.GameController {
+namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement {
 	public class GridManager : IGridManager {
 		public Element[,] Grid { get; }
 		

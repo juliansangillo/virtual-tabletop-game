@@ -1,8 +1,8 @@
 using System;
-using ProjectVirtualTabletop.Constants;
-using ProjectVirtualTabletop.Entities;
+using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
+using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 
-namespace ProjectVirtualTabletop.GameController {
+namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Factories {
 	public class GridManagerFactory {
 		public GridManager CreateGridManager(GridDetails gridDetails) {
             ThrowExceptionIfArgumentIsNull(gridDetails);

@@ -1,11 +1,11 @@
 ﻿using NUnit.Framework;
-using ProjectVirtualTabletop.GameController;
-using ProjectVirtualTabletop.Entities;
+using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement;
+using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using System;
-using ProjectVirtualTabletop.Exceptions;
-using ProjectVirtualTabletop.Constants;
+using NaughtyBikerGames.ProjectVirtualTabletop.Exceptions;
+using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 
-namespace ProjectVirtualTabletop.Editor.Tests.GameController {
+namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 	public class GridManagerTests {
 		GridManager gridManager;
 

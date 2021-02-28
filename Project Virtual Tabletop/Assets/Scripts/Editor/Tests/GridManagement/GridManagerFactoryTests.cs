@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using ProjectVirtualTabletop.Constants;
-using ProjectVirtualTabletop.Entities;
-using ProjectVirtualTabletop.GameController;
+using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
+using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
+using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement;
+using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Factories;
 
-namespace ProjectVirtualTabletop.Editor.Tests.GameController {
+namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 	public class GridManagerFactoryTests {
         GridManagerFactory gridManagerFactory;
 

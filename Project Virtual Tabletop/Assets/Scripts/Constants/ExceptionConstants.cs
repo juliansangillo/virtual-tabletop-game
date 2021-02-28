@@ -1,4 +1,4 @@
-namespace ProjectVirtualTabletop.Constants {
+namespace NaughtyBikerGames.ProjectVirtualTabletop.Constants {
 	public struct ExceptionConstants {
                 public const string VA_ARGUMENT_NULL = "A required argument was null.";
                 public const string VA_SPACE_INVALID = "The space is invalid. Please verify neither the row or column are negative and try again.\nParameter name = {0}";

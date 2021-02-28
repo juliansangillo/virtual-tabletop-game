@@ -1,4 +1,4 @@
-namespace ProjectVirtualTabletop.Entities {
+namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities {
 	public class GridSpace {
 		public int Row { get; set; }
 		public int Column { get; set; }

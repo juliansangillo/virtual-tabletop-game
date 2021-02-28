@@ -1,6 +1,6 @@
-using ProjectVirtualTabletop.Entities;
+using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 
-namespace ProjectVirtualTabletop.GameController.Interfaces {
+namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces {
 	public interface IGridManager {
 		void AddTo(GridSpace space, Element element);
 		Element GetElementOn(GridSpace space);

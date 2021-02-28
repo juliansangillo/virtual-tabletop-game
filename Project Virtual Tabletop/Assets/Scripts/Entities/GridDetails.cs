@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ProjectVirtualTabletop.Entities {
+namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities {
 	public class GridDetails {
         public int NumberOfRows { get; set; }
         public int NumberOfColumns { get; set; }
