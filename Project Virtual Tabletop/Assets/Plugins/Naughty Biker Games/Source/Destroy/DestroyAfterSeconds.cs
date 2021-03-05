@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
 
-namespace NaughtyBiker.Destroy {
+namespace NaughtyBikerGames.SDK.Destroy {
 	/**
     * A monobehaviour that destroys the game object it is attached to after some period of time. The user
     * can decide how many seconds until object is destroyed.<br>
     *
-    * Component Menu: "Naughty Biker Games / Destroy / Destroy After Seconds"
+    * Component Menu: "Naughty Biker Games / SDK / Destroy / Destroy After Seconds"
     *
-    * @author   Julian Sangillo
-    * @version  2.0
+    * @author   Julian Sangillo \<https://github.com/juliansangillo\>
+    * @version  3.0
+    * @since 1.0
     */
-	[AddComponentMenu("Naughty Biker Games/Destroy/Destroy After Seconds")]
+	[AddComponentMenu("Naughty Biker Games/SDK/Destroy/Destroy After Seconds")]
     public class DestroyAfterSeconds : MonoBehaviour {
         [SerializeField] private float seconds = 0;
 
@@ -23,11 +24,11 @@ namespace NaughtyBiker.Destroy {
             }
         }
 
-        private void Start() {
+        public void Start() {
             timer = seconds;
         }
 
-        private void Update() {
+        public void Update() {
             timer -= Time.deltaTime;
             if(timer <= 0f)
                 Destroy(gameObject);

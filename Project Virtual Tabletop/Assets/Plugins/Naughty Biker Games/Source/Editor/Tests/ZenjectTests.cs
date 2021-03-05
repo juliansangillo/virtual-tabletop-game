@@ -1,10 +1,10 @@
 using NUnit.Framework;
 using Zenject;
 
-namespace NaughtyBiker.Editor.Tests {
-	public class ZenjectTests : ZenjectUnitTestFixture {
+namespace NaughtyBikerGames.SDK.Editor.Tests {
+	public abstract class ZenjectTests : ZenjectUnitTestFixture {
         [TearDown]
-        public void TearDown() {
+        public virtual void TearDown() {
             Container.UnbindAll();
         }
 	}

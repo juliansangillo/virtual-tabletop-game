@@ -1,61 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using NaughtyBiker.InfoObjects.Delegates;
-using NaughtyBiker.InfoObjects.Interfaces;
+using NaughtyBikerGames.SDK.InfoObjects.Delegates;
+using NaughtyBikerGames.SDK.InfoObjects.Interfaces;
 
-namespace NaughtyBiker.InfoObjects {
+namespace NaughtyBikerGames.SDK.InfoObjects {
     /**
     * Default implementation of IInfo
     * 
-    * @author Julian Sangillo
-    * @version 2.0
+    * @author Julian Sangillo \<https://github.com/juliansangillo\>
+    * @version 3.0
+    * @since 1.0
     *
     * @see InfoObject
     */
     public class Info : IInfo {
-        private IDictionary<string, object> data;
+        private readonly IDictionary<string, object> data;
+        
         private StateChange stateChanged;
         private string id;
-
-        /**
-        * @param infoId A string that can be used as an identifier for this collection of info. Should be unique
-        */
-        public Info(string infoId) {
-            this.Id = infoId;
-            this.data = new Dictionary<string, object>();
-            this.StateChanged = (id, key, value) => {};
-        }
-
-        /**
-        * @param infoId A string that can be used as an identifier for this collection of info. Should be unique
-        * @param data A dictionary where all info will be hashed
-        */
-        public Info(string infoId, IDictionary<string, object> data) {
-            this.Id = infoId;
-            this.data = data;
-            this.StateChanged = (id, key, value) => {};
-        }
-
-        /**
-        * @param infoId A string that can be used as an identifier for this collection of info. Should be unique
-        * @param stateChanged The delegate that gets called when the state of this info object has been changed
-        */
-        public Info(string infoId, StateChange stateChanged) {
-            this.Id = infoId;
-            this.data = new Dictionary<string, object>();
-            this.StateChanged = stateChanged;
-        }
-
-        /**
-        * @param infoId A string that can be used as an identifier for this collection of info. Should be unique
-        * @param data A dictionary where all info will be hashed
-        * @param stateChanged The delegate that gets called when the state of this info object has been changed
-        */
-        public Info(string infoId, IDictionary<string, object> data, StateChange stateChanged) {
-            this.Id = infoId;
-            this.data = data;
-            this.StateChanged = stateChanged;
-        }
 
         /// Default implementation of IInfo.Data
         public IDictionary<string, object> Data {
@@ -100,6 +62,46 @@ namespace NaughtyBiker.InfoObjects {
             set {
                 Set(key, value);
             }
+        }
+
+        /**
+        * @param infoId A string that can be used as an identifier for this collection of info. Should be unique
+        */
+        public Info(string infoId) {
+            this.Id = infoId;
+            this.data = new Dictionary<string, object>();
+            this.StateChanged = (id, key, value) => {};
+        }
+
+        /**
+        * @param infoId A string that can be used as an identifier for this collection of info. Should be unique
+        * @param data A dictionary where all info will be hashed
+        */
+        public Info(string infoId, IDictionary<string, object> data) {
+            this.Id = infoId;
+            this.data = data;
+            this.StateChanged = (id, key, value) => {};
+        }
+
+        /**
+        * @param infoId A string that can be used as an identifier for this collection of info. Should be unique
+        * @param stateChanged The delegate that gets called when the state of this info object has been changed
+        */
+        public Info(string infoId, StateChange stateChanged) {
+            this.Id = infoId;
+            this.data = new Dictionary<string, object>();
+            this.StateChanged = stateChanged;
+        }
+
+        /**
+        * @param infoId A string that can be used as an identifier for this collection of info. Should be unique
+        * @param data A dictionary where all info will be hashed
+        * @param stateChanged The delegate that gets called when the state of this info object has been changed
+        */
+        public Info(string infoId, IDictionary<string, object> data, StateChange stateChanged) {
+            this.Id = infoId;
+            this.data = data;
+            this.StateChanged = stateChanged;
         }
 
         /**

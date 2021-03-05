@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using Zenject;
 
-namespace NaughtyBiker.Editor.UnityTests {
+namespace NaughtyBikerGames.SDK.Editor.UnityTests {
 	public abstract class ZenjectMonobehaviourTests : ZenjectUnitTestFixture {
 		[UnityTearDown]
 		public virtual IEnumerator UnityTearDown() {
