@@ -1,6 +1,6 @@
+using Zenject;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Factories;
-using Zenject;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Installers {
 	public class GridManagerBaseInstaller : Installer<GridManagerBaseInstaller> {

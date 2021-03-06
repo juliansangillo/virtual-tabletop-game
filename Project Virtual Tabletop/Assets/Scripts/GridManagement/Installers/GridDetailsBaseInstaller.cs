@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using Zenject;
+using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Installers {
 	public class GridDetailsBaseInstaller : Installer<GridDetailsBaseInstaller> {

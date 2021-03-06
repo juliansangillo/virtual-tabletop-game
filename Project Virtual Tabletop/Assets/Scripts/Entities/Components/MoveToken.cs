@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Linq;
-using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
+﻿using UnityEngine;
+using Zenject;
 using NaughtyBikerGames.SDK.Interpolation.Interfaces;
 using NaughtyBikerGames.SDK.Raycast.Interfaces;
-using UnityEngine;
-using Zenject;
+using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
+using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
 	public class MoveToken : MonoBehaviour {
@@ -68,37 +67,69 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
         }
 
         public void OnMouseDrag() {
-            GameObject hitObject = raycastable.CastRayForTag("Tile");
+            GameObject hitObject = raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG);
             if(hitObject != null) {
-                Vector3 source = transform.position;
-                Vector3 destination = new Vector3(hitObject.transform.position.x, source.y, hitObject.transform.position.z);
-
-                if(Vector3.Distance(source, destination) != 0f)
-                    StartCoroutine(lerpable.Lerp(source, destination, lerpDuration, current => transform.position = current));
+                MoveToNewTileIfSpaceIsValid(hitObject);
             }
         }
 
+        private void MoveToNewTileIfSpaceIsValid(GameObject hitObject) {
+            GridSpace newSpace = hitObject.GetComponent<GridSpaceMono>().Space;
+            Vector3 source = transform.position;
+            Vector3 destination = new Vector3(hitObject.transform.position.x, source.y, hitObject.transform.position.z);
+
+            if(IsSpaceValid(newSpace))
+                StartCoroutine(lerpable.Lerp(source, destination, lerpDuration, current => transform.position = current));
+        }
+
         public void OnMouseUp() {
-            GameObject hitObject = raycastable.CastRayForTag("Tile");
+            GameObject hitObject = raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG);
             if(hitObject != null) {
-                GridSpace newSpace = hitObject.GetComponent<GridSpaceMono>().Space;
-
-                if(gridManager.IsEmpty(newSpace)) {
-                    gridManager.Move(token.CurrentSpace, newSpace);
-                    token.CurrentSpace = newSpace;
-
-                    Vector3 source = transform.position;
-                    Vector3 destination = new Vector3(source.x, 0, source.z);
-                    StartCoroutine(lerpable.Lerp(source, destination, lerpDuration, current => {
-                        transform.position = current;
-                        initialPosition = transform.position;
-                    }));
-                }
-                else
-                    transform.position = initialPosition;
+                PlaceDownOnNewTileIfSpaceIsValid(hitObject);
             }
             else
-                transform.position = initialPosition;
+                SnapBackToInitialPosition();
+        }
+
+        private void PlaceDownOnNewTileIfSpaceIsValid(GameObject hitObject) {
+            GridSpace newSpace = hitObject.GetComponent<GridSpaceMono>().Space;
+
+            if(IsSpaceValid(newSpace)) {
+                MoveTokenOnGrid(newSpace);
+                PlaceDownOnTile();
+            }
+            else
+                SnapBackToInitialPosition();
+        }
+
+        private void MoveTokenOnGrid(GridSpace newSpace) {
+            gridManager.Move(token.CurrentSpace, newSpace);
+            token.CurrentSpace = newSpace;
+        }
+
+        private void PlaceDownOnTile() {
+            Vector3 source = transform.position;
+            Vector3 destination = new Vector3(source.x, 0, source.z);
+            StartCoroutine(lerpable.Lerp(source, destination, lerpDuration, current => {
+                transform.position = current;
+                initialPosition = transform.position;
+            }));
+        }
+
+        private void SnapBackToInitialPosition() {
+            transform.position = initialPosition;
+        }
+
+        private bool IsSpaceValid(GridSpace space) {
+            return IsSpaceNotTheCurrentSpace(space) && IsSpaceEmpty(space);
+        }
+
+        private bool IsSpaceNotTheCurrentSpace(GridSpace space) {
+            return space != token.CurrentSpace;
+        }
+
+        private bool IsSpaceEmpty(GridSpace space) {
+            return gridManager.IsEmpty(space);
         }
     }
 }
