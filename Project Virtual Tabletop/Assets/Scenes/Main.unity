@@ -2865,6 +2865,8 @@ MonoBehaviour:
   _installerPrefabs:
   - {fileID: 1937237573247326001, guid: c3ce205418edbb803ba870f786a97e13, type: 3}
   - {fileID: 6525705966152326320, guid: 2bd3d49b81a2d157f84dcefb7ad7f316, type: 3}
+  - {fileID: 299331896397988496, guid: df6e23b6bcc0a05ecb0152086f3beb24, type: 3}
+  - {fileID: 861725854573371515, guid: f48dc06eebbb369df89175bd77831f84, type: 3}
   _autoRun: 1
   OnPreInstall:
     m_PersistentCalls:
@@ -3511,6 +3513,16 @@ PrefabInstance:
       propertyPath: gridSpaceMono
       value: 
       objectReference: {fileID: 559065703}
+    - target: {fileID: 2400575018372500316, guid: 06a35370e716641f4b7c3bb37d4b211b,
+        type: 3}
+      propertyPath: currentSpace
+      value: 
+      objectReference: {fileID: 559065703}
+    - target: {fileID: 2400575018372500316, guid: 06a35370e716641f4b7c3bb37d4b211b,
+        type: 3}
+      propertyPath: lerpDuration
+      value: 0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06a35370e716641f4b7c3bb37d4b211b, type: 3}
 --- !u!1001 &7763358831214450327
