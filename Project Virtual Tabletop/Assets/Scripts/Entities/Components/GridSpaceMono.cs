@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components.Interfaces;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
 	public class GridSpaceMono : MonoBehaviour {
@@ -24,9 +25,13 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
                 return this.space;
             }
         }
+
+        public ISelectEffect SelectEffect { get; set; }
         
         public void Awake() {
             space = new GridSpace(row, col);
+
+            SelectEffect = GetComponent<ISelectEffect>();
         }
     }
 }

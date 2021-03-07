@@ -4,6 +4,7 @@ using NaughtyBikerGames.SDK.Interpolation.Interfaces;
 using NaughtyBikerGames.SDK.Raycast.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components.Interfaces;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
 	public class MoveToken : MonoBehaviour {
@@ -48,6 +49,9 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
             }
         }
 
+        public ISelectEffect InitialSelectEffect { get; private set; }
+        public ISelectEffect CurrentSelectEffect { get; internal set; }
+
         [Inject]
         public void Construct(IGridManager gridManager, ILerpable lerpable, IRaycastable raycastable) {
             this.gridManager = gridManager;
@@ -58,19 +62,23 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
         public void Start() {
             token = (Token)gridManager.GetElementOn(currentSpace.Space);
             initialPosition = transform.position;
+
+            InitialSelectEffect = currentSpace.SelectEffect;
+            CurrentSelectEffect = currentSpace.SelectEffect;
         }
 
         public void OnMouseDown() {
             Vector3 source = transform.position;
             Vector3 destination = new Vector3(source.x, maxHeight, source.z);
             StartCoroutine(lerpable.Lerp(source, destination, lerpDuration, current => transform.position = current));
+
+            CurrentSelectEffect.Play();
         }
 
         public void OnMouseDrag() {
             GameObject hitObject = raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG);
-            if(hitObject != null) {
+            if(hitObject != null)
                 MoveToNewTileIfSpaceIsValid(hitObject);
-            }
         }
 
         private void MoveToNewTileIfSpaceIsValid(GameObject hitObject) {
@@ -78,17 +86,30 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
             Vector3 source = transform.position;
             Vector3 destination = new Vector3(hitObject.transform.position.x, source.y, hitObject.transform.position.z);
 
-            if(IsSpaceValid(newSpace))
+            if(IsSpaceValid(newSpace)) {
                 StartCoroutine(lerpable.Lerp(source, destination, lerpDuration, current => transform.position = current));
+                UpdateSelectEffects(hitObject);
+            }
+        }
+
+        private void UpdateSelectEffects(GameObject hitObject) {
+            ISelectEffect newSelectEffect = hitObject.GetComponent<GridSpaceMono>().SelectEffect;
+
+            CurrentSelectEffect.Stop();
+            newSelectEffect.Play();
+            CurrentSelectEffect = newSelectEffect;
         }
 
         public void OnMouseUp() {
+            CurrentSelectEffect.Stop();
+
             GameObject hitObject = raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG);
-            if(hitObject != null) {
+            if(hitObject != null)
                 PlaceDownOnNewTileIfSpaceIsValid(hitObject);
-            }
-            else
+            else {
                 SnapBackToInitialPosition();
+                SnapBackToInitialSelectEffect();
+            }
         }
 
         private void PlaceDownOnNewTileIfSpaceIsValid(GameObject hitObject) {
@@ -97,9 +118,12 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
             if(IsSpaceValid(newSpace)) {
                 MoveTokenOnGrid(newSpace);
                 PlaceDownOnTile();
+                UpdateInitialSelectEffect();
             }
-            else
+            else {
                 SnapBackToInitialPosition();
+                SnapBackToInitialSelectEffect();
+            }
         }
 
         private void MoveTokenOnGrid(GridSpace newSpace) {
@@ -116,8 +140,16 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
             }));
         }
 
+        private void UpdateInitialSelectEffect() {
+            InitialSelectEffect = CurrentSelectEffect;
+        }
+
         private void SnapBackToInitialPosition() {
             transform.position = initialPosition;
+        }
+
+        private void SnapBackToInitialSelectEffect() {
+            CurrentSelectEffect = InitialSelectEffect;
         }
 
         private bool IsSpaceValid(GridSpace space) {
