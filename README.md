@@ -5,35 +5,21 @@
 ![GitHub All Releases](https://img.shields.io/github/downloads/juliansangillo/virtual-tabletop-game/total)  
 ![GitHub License](https://img.shields.io/github/license/juliansangillo/virtual-tabletop-game?color=blue)
 
-# {Project Name}
-{Your project/repository description here}
+# Project Virtual Tabletop
+The game portion of project virtual tabletop. This platform supplements the Dungeons and Dragons experience by providing a place for dungeon masters to create and manage their campaigns and for players to create their characters and play in the campaigns. It aims to be better than current D&D platforms complete with easy DM tools and 3D graphics.
 ## Genres
-- Genre 1
-- Genre 2
-- Genre 3
-## [System Requirements]
-### {Platform 1}
-- **OS Version:** {minimum os version} or later
-- **Processor:** {minimum cpu needed. should include both intel and amd.}
-- **Memory:** {minimum total RAM}
-- **Graphics:** {minimum graphics card needed. should include both nvidia and amd, or say "integrated" if integrated graphics is enough}
-- **Storage:** {minimum disk space needed for both install and operation.}
-### {Platform 2}
-- **OS Version:** {minimum os version} or later
-- **Processor:** {minimum cpu needed. should include both intel and amd.}
-- **Memory:** {minimum total RAM}
-- **Graphics:** {minimum graphics card needed. should include both nvidia and amd, or say "integrated" if integrated graphics is enough}
-- **Storage:** {minimum disk space needed for both install and operation.}
-## [Goal | Story]
-{Player objective(s) when playing your game. Add more details than your general project description. May be replaced with a story synopsis section instead.}
+- Sandbox RPG
+## System Requirements
+### WebGL
+- **Browser:** NA
 ## Controls
-- {Input1} -> {Action1}
-- {Input2} -> {Action2}
-- {Input3 | Input4} -> {Action3}
-## [Game Design Document]
-For full game design specifications, please see the official GDD (Game Design Document) [here](your-link-here)
+- Click and hold mouse -> Pick up token
+- Drag mouse while holding -> Move token between spaces
+- Release mouse -> Set token on space
+## Game Design Document
+For full game design specifications, please see the official GDD (Game Design Document) [here](https://naughtybikergames.atlassian.net/wiki/spaces/NBG/pages/169443473/Game+Design+Document)
 ## Source Specifications
-- **Editor:** {Unity editor version used}
-- **Language:** {Programming language used for code, usually C# or Javascript}
-- **Scripting Backend:** {Scripting backend used. This can be found in project settings. Usually set to Mono.}
-- **API:** {The .NET API compatability level being used. This can be found in project settings.}
+- **Editor:** 2019.4.12f1
+- **Language:** C#
+- **Scripting Backend:** Mono
+- **API:** .NET Standard 2.0
