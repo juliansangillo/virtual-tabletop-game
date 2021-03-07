@@ -5,6 +5,7 @@ using NaughtyBikerGames.SDK.Raycast.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components.Interfaces;
+using System.Collections;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
 	public class MoveToken : MonoBehaviour {
@@ -70,6 +71,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
         public void OnMouseDown() {
             Vector3 source = transform.position;
             Vector3 destination = new Vector3(source.x, maxHeight, source.z);
+            StopAllCoroutines();
             StartCoroutine(lerpable.Lerp(source, destination, lerpDuration, current => transform.position = current));
 
             CurrentSelectEffect.Play();
@@ -83,11 +85,10 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
 
         private void MoveToNewTileIfSpaceIsValid(GameObject hitObject) {
             GridSpace newSpace = hitObject.GetComponent<GridSpaceMono>().Space;
-            Vector3 source = transform.position;
-            Vector3 destination = new Vector3(hitObject.transform.position.x, source.y, hitObject.transform.position.z);
+            Vector3 destination = new Vector3(hitObject.transform.position.x, transform.position.y, hitObject.transform.position.z);
 
-            if(IsSpaceValid(newSpace)) {
-                StartCoroutine(lerpable.Lerp(source, destination, lerpDuration, current => transform.position = current));
+            if(IsNotCurrentPosition(destination) && IsSpaceEmpty(newSpace)) {
+                transform.position = destination;
                 UpdateSelectEffects(hitObject);
             }
         }
@@ -100,22 +101,25 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
             CurrentSelectEffect = newSelectEffect;
         }
 
+        private bool IsNotCurrentPosition(Vector3 destination) {
+            return Vector3.Distance(destination, transform.position) != 0f;
+        }
+
         public void OnMouseUp() {
             CurrentSelectEffect.Stop();
 
             GameObject hitObject = raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG);
             if(hitObject != null)
-                PlaceDownOnNewTileIfSpaceIsValid(hitObject);
+                PlaceDownOnNewTileIfSpaceIsEmpty(hitObject);
             else {
                 SnapBackToInitialPosition();
                 SnapBackToInitialSelectEffect();
             }
         }
 
-        private void PlaceDownOnNewTileIfSpaceIsValid(GameObject hitObject) {
+        private void PlaceDownOnNewTileIfSpaceIsEmpty(GameObject hitObject) {
             GridSpace newSpace = hitObject.GetComponent<GridSpaceMono>().Space;
-
-            if(IsSpaceValid(newSpace)) {
+            if(IsSpaceEmpty(newSpace)) {
                 MoveTokenOnGrid(newSpace);
                 PlaceDownOnTile();
                 UpdateInitialSelectEffect();
@@ -134,6 +138,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
         private void PlaceDownOnTile() {
             Vector3 source = transform.position;
             Vector3 destination = new Vector3(source.x, 0, source.z);
+            StopAllCoroutines();
             StartCoroutine(lerpable.Lerp(source, destination, lerpDuration, current => {
                 transform.position = current;
                 initialPosition = transform.position;
@@ -150,14 +155,6 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
 
         private void SnapBackToInitialSelectEffect() {
             CurrentSelectEffect = InitialSelectEffect;
-        }
-
-        private bool IsSpaceValid(GridSpace space) {
-            return IsSpaceNotTheCurrentSpace(space) && IsSpaceEmpty(space);
-        }
-
-        private bool IsSpaceNotTheCurrentSpace(GridSpace space) {
-            return space != token.CurrentSpace;
         }
 
         private bool IsSpaceEmpty(GridSpace space) {

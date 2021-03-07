@@ -126,7 +126,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Entities.Co
 		}
 
 		[UnityTest]
-		public IEnumerator OnMouseDrag_CastRayForTagReturnsNullGameObject_DontCallLerp() {
+		public IEnumerator OnMouseDrag_CastRayForTagReturnsNullGameObject_DontUpdatePosition() {
 			raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG).ReturnsNull();
 			
 			yield return null;
@@ -135,24 +135,11 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Entities.Co
 
 			yield return null;
 
-			lerpable.DidNotReceive().Lerp(Arg.Any<Vector3>(), Arg.Any<Vector3>(), Arg.Any<float>(), Arg.Any<Action<Vector3>>());
+			Assert.AreEqual(tileObject1.transform.position, tokenObject.transform.position);
 		}
 
 		[UnityTest]
-		public IEnumerator OnMouseDrag_CastRayForTagReturnsATileAndTheTokenIsAlreadyLocatedAtThatTile_DontCallLerp() {
-			raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG).Returns(tileObject1);
-
-			yield return null;
-
-			moveToken.OnMouseDrag();
-
-			yield return null;
-
-			lerpable.DidNotReceive().Lerp(Arg.Any<Vector3>(), Arg.Any<Vector3>(), Arg.Any<float>(), Arg.Any<Action<Vector3>>());
-		}
-
-		[UnityTest]
-		public IEnumerator OnMouseDrag_CastRayForTagReturnsATileAndTheTileIsNotEmpty_DontCallLerp() {
+		public IEnumerator OnMouseDrag_CastRayForTagReturnsATileAndTheTileIsNotEmpty_DontUpdatePosition() {
 			raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG).Returns(tileObject2);
 			gridManager.IsEmpty(tileObject2.GetComponent<GridSpaceMono>().Space).Returns(false);
 
@@ -162,14 +149,12 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Entities.Co
 
 			yield return null;
 
-			lerpable.DidNotReceive().Lerp(Arg.Any<Vector3>(), Arg.Any<Vector3>(), Arg.Any<float>(), Arg.Any<Action<Vector3>>());
+			Assert.AreEqual(tileObject1.transform.position, tokenObject.transform.position);
 		}
 
 		[UnityTest]
-		public IEnumerator OnMouseDrag_CastRayForTagReturnsATile_TheTokenIsNotLocatedAtThatTileAndTheTileIsEmpty_CallLerpToMoveToNewTile() {
-			Vector3 expectedSource = tokenObject.transform.position;
-			Vector3 expectedDestination = new Vector3(tileObject2.transform.position.x, expectedSource.y, tileObject2.transform.position.z);
-			float expectedLerpDuration = 0f;
+		public IEnumerator OnMouseDrag_CastRayForTagReturnsATileAndTheTileIsEmpty_UpdatePositionToNewTile() {
+			Vector3 expected = new Vector3(tileObject2.transform.position.x, tokenObject.transform.position.y, tileObject2.transform.position.z);
 			
 			raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG).Returns(tileObject2);
 			gridManager.IsEmpty(tileObject2.GetComponent<GridSpaceMono>().Space).Returns(true);
@@ -180,7 +165,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Entities.Co
 
 			yield return null;
 
-			lerpable.Received().Lerp(expectedSource, expectedDestination, expectedLerpDuration, Arg.Any<Action<Vector3>>());
+			Assert.AreEqual(expected, tokenObject.transform.position);
 		}
 
 		[UnityTest]
