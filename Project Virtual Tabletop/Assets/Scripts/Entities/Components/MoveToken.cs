@@ -5,7 +5,6 @@ using NaughtyBikerGames.SDK.Raycast.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components.Interfaces;
-using System.Collections;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
 	public class MoveToken : MonoBehaviour {

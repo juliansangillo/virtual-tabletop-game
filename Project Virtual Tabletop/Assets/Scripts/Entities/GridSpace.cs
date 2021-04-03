@@ -19,5 +19,22 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities {
 		private bool IsColumnNonNegative() {
 			return Column >= 0;
 		}
+
+		public override bool Equals(object obj) {
+			return obj is GridSpace space &&
+				   Row == space.Row &&
+				   Column == space.Column;
+		}
+
+		public override int GetHashCode() {
+			int hashCode = 240067226;
+			hashCode = hashCode * -1521134295 + Row.GetHashCode();
+			hashCode = hashCode * -1521134295 + Column.GetHashCode();
+			return hashCode;
+		}
+
+		public override string ToString() {
+			return base.ToString() + $" ({Row}, {Column})";
+		}
 	}
 }

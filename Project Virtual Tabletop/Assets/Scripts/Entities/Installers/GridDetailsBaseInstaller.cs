@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Zenject;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 
-namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Installers {
+namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Installers {
 	public class GridDetailsBaseInstaller : Installer<GridDetailsBaseInstaller> {
 		public override void InstallBindings() {
 			Container.Bind<GridDetails>()
