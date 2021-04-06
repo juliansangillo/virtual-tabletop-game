@@ -11,22 +11,29 @@ using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.Exceptions;
 using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement;
+using Zenject;
+using NaughtyBikerGames.SDK.Editor.Tests;
+using NaughtyBikerGames.SDK.Signals.Installers;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
-	public class PathManagerTests {
+	public class PathManagerTests : ZenjectTests {
         private PathManager pathManager;
 
         private IPathFinder pathFinder;
+        private SignalBus signalBus;
 
         [SetUp]
         public void SetUp() {
+            SignalsBaseInstaller.Install(Container);
+
             GridDetails gridDetails = new GridDetails();
             gridDetails.NumberOfRows = 3;
             gridDetails.NumberOfColumns = 3;
 
             pathFinder = Substitute.For<IPathFinder>();
+            signalBus = Container.Resolve<SignalBus>();
             
-            pathManager = new PathManager(gridDetails, pathFinder);
+            pathManager = new PathManager(gridDetails, pathFinder, signalBus);
         }
 
         [Test]
@@ -36,8 +43,9 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
             gridDetails.NumberOfColumns = 5;
 
             IPathFinder pathFinder = Substitute.For<IPathFinder>();
+            SignalBus signalBus = Container.Resolve<SignalBus>();
 
-            PathManager pathManager = new PathManager(gridDetails, pathFinder);
+            PathManager pathManager = new PathManager(gridDetails, pathFinder, signalBus);
 
             Assert.AreEqual(4, pathManager.GridSize.Rows);
             Assert.AreEqual(5, pathManager.GridSize.Columns);
@@ -50,8 +58,9 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
             gridDetails.NumberOfColumns = 5;
 
             IPathFinder pathFinder = Substitute.For<IPathFinder>();
+            SignalBus signalBus = Container.Resolve<SignalBus>();
 
-            PathManager pathManager = new PathManager(gridDetails, pathFinder);
+            PathManager pathManager = new PathManager(gridDetails, pathFinder, signalBus);
 
             Assert.AreEqual(Distance.FromMeters(1), pathManager.CellSize.Width);
             Assert.AreEqual(Distance.FromMeters(1), pathManager.CellSize.Height);
@@ -64,19 +73,35 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
             gridDetails.NumberOfColumns = 5;
 
             IPathFinder pathFinder = Substitute.For<IPathFinder>();
+            SignalBus signalBus = Container.Resolve<SignalBus>();
 
-            PathManager pathManager = new PathManager(gridDetails, pathFinder);
+            PathManager pathManager = new PathManager(gridDetails, pathFinder, signalBus);
 
             Assert.AreEqual(10f, pathManager.TraversalVelocity.KilometersPerHour);
         }
 
+        /*[Test]
+        public void PathManager_GivenSignalBus_SubscribeDisconnectAllToTheDisconnectAllSignal() {
+            GridDetails gridDetails = new GridDetails();
+            gridDetails.NumberOfRows = 4;
+            gridDetails.NumberOfColumns = 5;
+
+            IPathFinder pathFinder = Substitute.For<IPathFinder>();
+            SignalBus signalBus = Container.Resolve<SignalBus>();
+
+            PathManager pathManager = new PathManager(gridDetails, pathFinder, signalBus);
+
+            Assert.AreEqual(10f, pathManager.TraversalVelocity.KilometersPerHour);
+        }*/
+
         [Test]
         public void PathManager_GivenNullGridDetails_ThrowArgumentNullException() {
             IPathFinder pathFinder = Substitute.For<IPathFinder>();
+            SignalBus signalBus = Container.Resolve<SignalBus>();
             Exception expected = new ArgumentNullException("gridDetails", ExceptionConstants.VA_ARGUMENT_NULL);
 
             Exception actual = Assert.Throws<ArgumentNullException>(() => {
-                new PathManager(null, pathFinder);
+                new PathManager(null, pathFinder, signalBus);
             });
             Assert.AreEqual(expected.Message, actual.Message);
         }
@@ -86,10 +111,11 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
             GridDetails gridDetails = new GridDetails();
             gridDetails.NumberOfRows = 4;
             gridDetails.NumberOfColumns = 5;
+            SignalBus signalBus = Container.Resolve<SignalBus>();
             Exception expected = new ArgumentNullException("pathFinder", ExceptionConstants.VA_ARGUMENT_NULL);
 
             Exception actual = Assert.Throws<ArgumentNullException>(() => {
-                new PathManager(gridDetails, null);
+                new PathManager(gridDetails, null, signalBus);
             });
             Assert.AreEqual(expected.Message, actual.Message);
         }
@@ -101,13 +127,14 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
             gridDetails.NumberOfRows = numRows;
             gridDetails.NumberOfColumns = 5;
             IPathFinder pathFinder = Substitute.For<IPathFinder>();
+            SignalBus signalBus = Container.Resolve<SignalBus>();
             Exception expected = new ArgumentException(
                 string.Format(ExceptionConstants.VA_NUMBER_OF_ROWS_INVALID, numRows), 
                 "gridDetails"
             );
 
             Exception actual = Assert.Throws<ArgumentException>(() => {
-                new PathManager(gridDetails, pathFinder);
+                new PathManager(gridDetails, pathFinder, signalBus);
             });
             Assert.AreEqual(expected.Message, actual.Message);
         }
@@ -119,13 +146,14 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
             gridDetails.NumberOfRows = 4;
             gridDetails.NumberOfColumns = numColumns;
             IPathFinder pathFinder = Substitute.For<IPathFinder>();
+            SignalBus signalBus = Container.Resolve<SignalBus>();
             Exception expected = new ArgumentException(
                 string.Format(ExceptionConstants.VA_NUMBER_OF_COLUMNS_INVALID, numColumns), 
                 "gridDetails"
             );
 
             Exception actual = Assert.Throws<ArgumentException>(() => {
-                new PathManager(gridDetails, pathFinder);
+                new PathManager(gridDetails, pathFinder, signalBus);
             });
             Assert.AreEqual(expected.Message, actual.Message);
         }
@@ -275,6 +303,168 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
             edges.Add(new Edge(new Node(new Position(2, 1)), new Node(new Position(2, 2)), Velocity.FromKilometersPerHour(0)));
             
             return new Path(PathType.Complete, edges);
+        }
+
+        [Test]
+        public void Disconnect_GivenValidGridSpace_DisconnectNodeForTheCorrespondingGridPosition() {
+            GridSpace space = new GridSpace(1, 1);
+
+            pathManager.Disconnect(space);
+            INode actual = pathManager.Grid.GetNode(space.AsGridPosition());
+
+            Assert.AreEqual(0, actual.Incoming.Count);
+            Assert.AreEqual(0, actual.Outgoing.Count);
+        }
+
+        [Test]
+        public void Disconnect_GivenGridSpaceIsNull_ThrowArgumentNullException() {
+            Exception expected = new ArgumentNullException("space", ExceptionConstants.VA_ARGUMENT_NULL);
+
+            Exception actual = Assert.Throws<ArgumentNullException>(() => {
+                pathManager.Disconnect(null);
+            });
+            Assert.AreEqual(expected.Message, actual.Message);
+        }
+
+        [Test]
+        public void Disconnect_GivenInvalidSpaceWhereRowIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
+            GridSpace space = new GridSpace(-1, 1);
+            Exception expected = new InvalidSpaceException(string.Format(ExceptionConstants.VA_SPACE_INVALID, "space"));
+
+            Exception actual = Assert.Throws<InvalidSpaceException>(() => {
+                pathManager.Disconnect(space);
+            });
+            Assert.AreEqual(expected.Message, actual.Message);
+        }
+
+        [Test]
+        public void Disconnect_GivenInvalidSpaceWhereColumnIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
+            GridSpace space = new GridSpace(1, -1);
+            Exception expected = new InvalidSpaceException(string.Format(ExceptionConstants.VA_SPACE_INVALID, "space"));
+
+            Exception actual = Assert.Throws<InvalidSpaceException>(() => {
+                pathManager.Disconnect(space);
+            });
+            Assert.AreEqual(expected.Message, actual.Message);
+        }
+
+        [Test]
+        public void Disconnect_GivenGridSpaceWhereRowDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
+            GridSpace space = new GridSpace(999, 1);
+            Exception expected = new ArgumentException(ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS, "space");
+
+            Exception actual = Assert.Throws<ArgumentException>(() => {
+                pathManager.Disconnect(space);
+            });
+            Assert.AreEqual(expected.Message, actual.Message);
+        }
+
+        [Test]
+        public void Disconnect_GivenGridSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
+            GridSpace space = new GridSpace(1, 999);
+            Exception expected = new ArgumentException(ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS, "space");
+
+            Exception actual = Assert.Throws<ArgumentException>(() => {
+                pathManager.Disconnect(space);
+            });
+            Assert.AreEqual(expected.Message, actual.Message);
+        }
+
+        [Test]
+        public void Reconnect_GivenValidGridSpaceSurroundedBy4ConnectedSpaces_ReconnectTheDisconnectedNodeToAll4SurroundingPositions() {
+            GridSpace space = new GridSpace(1, 1);
+            pathManager.Grid.DisconnectNode(space.AsGridPosition());
+
+            pathManager.Reconnect(space);
+            INode actual = pathManager.Grid.GetNode(space.AsGridPosition());
+
+            Assert.AreEqual(4, actual.Incoming.Count);
+            Assert.AreEqual(4, actual.Outgoing.Count);
+        }
+
+        [Test]
+        public void Reconnect_GivenGridSpaceIsNull_ThrowArgumentNullException() {
+            Exception expected = new ArgumentNullException("space", ExceptionConstants.VA_ARGUMENT_NULL);
+
+            Exception actual = Assert.Throws<ArgumentNullException>(() => {
+                pathManager.Reconnect(null);
+            });
+            Assert.AreEqual(expected.Message, actual.Message);
+        }
+
+        [Test]
+        public void Reconnect_GivenInvalidSpaceWhereRowIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
+            GridSpace space = new GridSpace(-1, 1);
+            Exception expected = new InvalidSpaceException(string.Format(ExceptionConstants.VA_SPACE_INVALID, "space"));
+
+            Exception actual = Assert.Throws<InvalidSpaceException>(() => {
+                pathManager.Reconnect(space);
+            });
+            Assert.AreEqual(expected.Message, actual.Message);
+        }
+
+        [Test]
+        public void Reconnect_GivenInvalidSpaceWhereColumnIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
+            GridSpace space = new GridSpace(1, -1);
+            Exception expected = new InvalidSpaceException(string.Format(ExceptionConstants.VA_SPACE_INVALID, "space"));
+
+            Exception actual = Assert.Throws<InvalidSpaceException>(() => {
+                pathManager.Reconnect(space);
+            });
+            Assert.AreEqual(expected.Message, actual.Message);
+        }
+
+        [Test]
+        public void Reconnect_GivenGridSpaceWhereRowDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
+            GridSpace space = new GridSpace(999, 1);
+            Exception expected = new ArgumentException(ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS, "space");
+
+            Exception actual = Assert.Throws<ArgumentException>(() => {
+                pathManager.Reconnect(space);
+            });
+            Assert.AreEqual(expected.Message, actual.Message);
+        }
+
+        [Test]
+        public void Reconnect_GivenGridSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
+            GridSpace space = new GridSpace(1, 999);
+            Exception expected = new ArgumentException(ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS, "space");
+
+            Exception actual = Assert.Throws<ArgumentException>(() => {
+                pathManager.Reconnect(space);
+            });
+            Assert.AreEqual(expected.Message, actual.Message);
+        }
+
+        [Test]
+        public void DisconnectAll_GivenListOfGridSpaces_DisconnectEachNodeForAllCorrespondingGridPositions() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(1, 0));
+            spaces.Add(new GridSpace(1, 1));
+            spaces.Add(new GridSpace(2, 1));
+
+            pathManager.DisconnectAll(spaces);
+            List<INode> actuals = new List<INode>();
+            actuals.Add(pathManager.Grid.GetNode(spaces[0].AsGridPosition()));
+            actuals.Add(pathManager.Grid.GetNode(spaces[1].AsGridPosition()));
+            actuals.Add(pathManager.Grid.GetNode(spaces[2].AsGridPosition()));
+
+            Assert.AreEqual(0, actuals[0].Incoming.Count);
+            Assert.AreEqual(0, actuals[0].Outgoing.Count);
+            Assert.AreEqual(0, actuals[1].Incoming.Count);
+            Assert.AreEqual(0, actuals[1].Outgoing.Count);
+            Assert.AreEqual(0, actuals[2].Incoming.Count);
+            Assert.AreEqual(0, actuals[2].Outgoing.Count);
+        }
+
+        [Test]
+        public void DisconnectAll_GivenListIsNull_ThrowArgumentNullException() {
+            Exception expected = new ArgumentNullException("spaces", ExceptionConstants.VA_ARGUMENT_NULL);
+
+            Exception actual = Assert.Throws<ArgumentNullException>(() => {
+                pathManager.DisconnectAll(null);
+            });
+            Assert.AreEqual(expected.Message, actual.Message);
         }
 	}
 }

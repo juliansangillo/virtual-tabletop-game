@@ -1,3 +1,5 @@
+using Roy_T.AStar.Primitives;
+
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities {
 	public class GridSpace {
 		public int Row { get; set; }
@@ -7,6 +9,10 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities {
 			this.Row = row;
 			this.Column = column;
 		}
+
+        public GridPosition AsGridPosition() {
+            return new GridPosition(Column, Row);
+        }
 
 		public bool IsValid() {
 			return IsRowNonNegative() && IsColumnNonNegative();

@@ -8,16 +8,18 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Installers {
 	public class PathManagerBaseInstaller : Installer<PathManagerBaseInstaller> {
         private readonly GridDetails gridDetails;
         private readonly IPathFinder pathFinder;
+        private readonly SignalBus signalBus;
 
         [Inject]
-        public PathManagerBaseInstaller(GridDetails gridDetails) {
+        public PathManagerBaseInstaller(GridDetails gridDetails, SignalBus signalBus) {
             this.gridDetails = gridDetails;
             this.pathFinder = new PathFinderAdapter();
+            this.signalBus = signalBus;
         }
 
 		public override void InstallBindings() {
 			Container.BindInterfacesTo<IPathManager>()
-                .FromInstance(new PathManager(gridDetails, pathFinder))
+                .FromInstance(new PathManager(gridDetails, pathFinder, signalBus))
                 .AsSingle();
 		}
 	}

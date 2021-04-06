@@ -10,85 +10,111 @@ using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.Exceptions;
 using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.Extensions;
+using Zenject;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
 	public class PathManager : IPathManager {
-        private readonly Grid grid;
-        private readonly IPathFinder pathFinder;
+		private readonly IPathFinder pathFinder;
 
-        public GridSize GridSize { get; private set; }
-        public Size CellSize { get; private set; }
-        public Velocity TraversalVelocity { get; private set; }
-        
-		public PathManager(GridDetails gridDetails, IPathFinder pathFinder) {
-            ThrowExceptionIfArgumentIsNull(gridDetails, "gridDetails", ExceptionConstants.VA_ARGUMENT_NULL);
-            ThrowExceptionIfArgumentIsNull(pathFinder, "pathFinder", ExceptionConstants.VA_ARGUMENT_NULL);
-            ThrowExceptionIfGridDetailsIsInvalid(gridDetails);
+		public GridSize GridSize { get; private set; }
+		public Size CellSize { get; private set; }
+		public Velocity TraversalVelocity { get; private set; }
 
-            GridSize = new GridSize(gridDetails.NumberOfColumns, gridDetails.NumberOfRows);
-            CellSize = new Size(Distance.FromMeters(1), Distance.FromMeters(1));
-            TraversalVelocity = Velocity.FromKilometersPerHour(10);
+		public Grid Grid { get; private set; }
 
-            this.grid = Grid.CreateGridWithLateralConnections(GridSize, CellSize, TraversalVelocity);
-            this.pathFinder = pathFinder;
+		public PathManager(GridDetails gridDetails, IPathFinder pathFinder, SignalBus signalBus) {
+			ThrowExceptionIfArgumentIsNull(gridDetails, "gridDetails", ExceptionConstants.VA_ARGUMENT_NULL);
+			ThrowExceptionIfArgumentIsNull(pathFinder, "pathFinder", ExceptionConstants.VA_ARGUMENT_NULL);
+			ThrowExceptionIfGridDetailsIsInvalid(gridDetails);
+
+			GridSize = new GridSize(gridDetails.NumberOfColumns, gridDetails.NumberOfRows);
+			CellSize = new Size(Distance.FromMeters(1), Distance.FromMeters(1));
+			TraversalVelocity = Velocity.FromKilometersPerHour(10);
+
+			this.Grid = Grid.CreateGridWithLateralConnections(GridSize, CellSize, TraversalVelocity);
+			this.pathFinder = pathFinder;
+		}
+
+		private void ThrowExceptionIfGridDetailsIsInvalid(GridDetails gridDetails) {
+			if (!gridDetails.IsNumberOfRowsValid())
+				throw new ArgumentException(
+					string.Format(ExceptionConstants.VA_NUMBER_OF_ROWS_INVALID, gridDetails.NumberOfRows),
+					"gridDetails"
+				);
+			else if (!gridDetails.IsNumberOfColumnsValid())
+				throw new ArgumentException(
+					string.Format(ExceptionConstants.VA_NUMBER_OF_COLUMNS_INVALID, gridDetails.NumberOfColumns),
+					"gridDetails"
+				);
 		}
 
 		public List<GridSpace> Find(GridSpace from, GridSpace to) {
-            ThrowExceptionIfArgumentIsNull(from, "from", ExceptionConstants.VA_ARGUMENT_NULL);
-            ThrowExceptionIfArgumentIsNull(to, "to", ExceptionConstants.VA_ARGUMENT_NULL);
-            ThrowExceptionIfSpaceIsInvalid(from, "from", ExceptionConstants.VA_SPACE_INVALID);
-            ThrowExceptionIfSpaceIsInvalid(to, "to", ExceptionConstants.VA_SPACE_INVALID);
-            ThrowExceptionIfSpaceIsOutOfBounds(from, "from", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
-            ThrowExceptionIfSpaceIsOutOfBounds(to, "to", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
+			ThrowExceptionIfArgumentIsNull(from, "from", ExceptionConstants.VA_ARGUMENT_NULL);
+			ThrowExceptionIfArgumentIsNull(to, "to", ExceptionConstants.VA_ARGUMENT_NULL);
+			ThrowExceptionIfSpaceIsInvalid(from, "from", ExceptionConstants.VA_SPACE_INVALID);
+			ThrowExceptionIfSpaceIsInvalid(to, "to", ExceptionConstants.VA_SPACE_INVALID);
+			ThrowExceptionIfSpaceIsOutOfBounds(from, "from", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
+			ThrowExceptionIfSpaceIsOutOfBounds(to, "to", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
 
-			Path path = pathFinder.FindPath(new GridPosition(from.Column, from.Row), new GridPosition(to.Column, to.Row), grid);
-            Position firstPosition = path.Edges.First().Start.Position;
+			Path path = pathFinder.FindPath(from.AsGridPosition(), to.AsGridPosition(), Grid);
+			Position firstPosition = path.Edges.First().Start.Position;
 
-            List<GridSpace> result = new List<GridSpace>();
-            result.Add(new GridSpace((int)firstPosition.Y, (int)firstPosition.X));
+			List<GridSpace> result = new List<GridSpace>();
+			result.Add(new GridSpace((int)firstPosition.Y, (int)firstPosition.X));
 
-            foreach(IEdge edge in path.Edges) {
-                Position position = edge.End.Position;
-                result.Add(new GridSpace((int)position.Y, (int)position.X));
-            }
-            
-            return result;
+			foreach (IEdge edge in path.Edges) {
+				Position position = edge.End.Position;
+				result.Add(new GridSpace((int)position.Y, (int)position.X));
+			}
+
+			return result;
 		}
 
-        private void ThrowExceptionIfArgumentIsNull(object arg, string paramName, string message) {
-			if(arg == null)
-				throw new ArgumentNullException(paramName, message);
+		public void Disconnect(GridSpace space) {
+			ThrowExceptionIfArgumentIsNull(space, "space", ExceptionConstants.VA_ARGUMENT_NULL);
+			ThrowExceptionIfSpaceIsInvalid(space, "space", ExceptionConstants.VA_SPACE_INVALID);
+			ThrowExceptionIfSpaceIsOutOfBounds(space, "space", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
+
+			Grid.DisconnectNode(space.AsGridPosition());
 		}
 
-        private void ThrowExceptionIfGridDetailsIsInvalid(GridDetails gridDetails) {
-            if(!gridDetails.IsNumberOfRowsValid())
-                throw new ArgumentException(
-                    string.Format(ExceptionConstants.VA_NUMBER_OF_ROWS_INVALID, gridDetails.NumberOfRows),
-                    "gridDetails"
-                );
-            else if(!gridDetails.IsNumberOfColumnsValid())
-                throw new ArgumentException(
-                    string.Format(ExceptionConstants.VA_NUMBER_OF_COLUMNS_INVALID, gridDetails.NumberOfColumns), 
-                    "gridDetails"
-                );
-        }
+        public void Reconnect(GridSpace space) {
+            ThrowExceptionIfArgumentIsNull(space, "space", ExceptionConstants.VA_ARGUMENT_NULL);
+            ThrowExceptionIfSpaceIsInvalid(space, "space", ExceptionConstants.VA_SPACE_INVALID);
+            ThrowExceptionIfSpaceIsOutOfBounds(space, "space", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
 
-        private void ThrowExceptionIfSpaceIsInvalid(GridSpace space, string paramName, string message) {
-			if(!space.IsValid())
+			Grid.ReconnectNode(space.AsGridPosition(), TraversalVelocity);
+		}
+
+		private void ThrowExceptionIfSpaceIsInvalid(GridSpace space, string paramName, string message) {
+			if (!space.IsValid())
 				throw new InvalidSpaceException(string.Format(message, paramName));
 		}
 
-        private void ThrowExceptionIfSpaceIsOutOfBounds(GridSpace space, string paramName, string message) {
-			if(IsRowOutOfBounds(space.Row) || IsColumnOutOfBounds(space.Column))
+		private void ThrowExceptionIfSpaceIsOutOfBounds(GridSpace space, string paramName, string message) {
+			if (IsRowOutOfBounds(space.Row) || IsColumnOutOfBounds(space.Column))
 				throw new ArgumentException(message, paramName);
 		}
 
-        private bool IsRowOutOfBounds(int row) {
-			return row >= grid.Rows;
+		private bool IsRowOutOfBounds(int row) {
+			return row >= Grid.Rows;
 		}
 
-        private bool IsColumnOutOfBounds(int column) {
-			return column >= grid.Columns;
+		private bool IsColumnOutOfBounds(int column) {
+			return column >= Grid.Columns;
+		}
+
+		public void DisconnectAll(List<GridSpace> spaces) {
+            ThrowExceptionIfArgumentIsNull(spaces, "spaces", ExceptionConstants.VA_ARGUMENT_NULL);
+
+			foreach (GridSpace space in spaces)
+                Disconnect(space);
+		}
+
+        private void ThrowExceptionIfArgumentIsNull(object arg, string paramName, string message) {
+			if (arg == null)
+				throw new ArgumentNullException(paramName, message);
 		}
 	}
 }
