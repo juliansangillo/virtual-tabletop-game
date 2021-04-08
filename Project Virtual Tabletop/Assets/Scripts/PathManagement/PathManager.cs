@@ -12,16 +12,23 @@ using NaughtyBikerGames.ProjectVirtualTabletop.Exceptions;
 using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Extensions;
 using Zenject;
+using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
-	public class PathManager : IPathManager {
+	public class PathManager : IPathManager, IInitializable, IDisposable {
 		private readonly IPathFinder pathFinder;
+        private readonly SignalBus signalBus;
 
 		public GridSize GridSize { get; private set; }
 		public Size CellSize { get; private set; }
 		public Velocity TraversalVelocity { get; private set; }
 
 		public Grid Grid { get; private set; }
+
+        internal Action<GridInitializeSignal> GridInitializeCallback { get; set; }
+        internal Action<GridMoveSignal> GridMoveCallback { get; set; }
+        internal Action<GridAddSignal> GridAddCallback { get; set; }
+        internal Action<GridRemoveSignal> GridRemoveCallback { get; set; }
 
 		public PathManager(GridDetails gridDetails, IPathFinder pathFinder, SignalBus signalBus) {
 			ThrowExceptionIfArgumentIsNull(gridDetails, "gridDetails", ExceptionConstants.VA_ARGUMENT_NULL);
@@ -34,19 +41,22 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
 
 			this.Grid = Grid.CreateGridWithLateralConnections(GridSize, CellSize, TraversalVelocity);
 			this.pathFinder = pathFinder;
+            this.signalBus = signalBus;
+
+            this.GridInitializeCallback = s => DisconnectAll(s.Spaces);
+            this.GridMoveCallback = s => {
+                Reconnect(s.From);
+                Disconnect(s.To);
+            };
+            this.GridAddCallback = s => Disconnect(s.Space);
+            this.GridRemoveCallback = s => Reconnect(s.Space);
 		}
 
-		private void ThrowExceptionIfGridDetailsIsInvalid(GridDetails gridDetails) {
-			if (!gridDetails.IsNumberOfRowsValid())
-				throw new ArgumentException(
-					string.Format(ExceptionConstants.VA_NUMBER_OF_ROWS_INVALID, gridDetails.NumberOfRows),
-					"gridDetails"
-				);
-			else if (!gridDetails.IsNumberOfColumnsValid())
-				throw new ArgumentException(
-					string.Format(ExceptionConstants.VA_NUMBER_OF_COLUMNS_INVALID, gridDetails.NumberOfColumns),
-					"gridDetails"
-				);
+        public void Initialize() {
+			signalBus.Subscribe<GridInitializeSignal>(GridInitializeCallback);
+            signalBus.Subscribe<GridMoveSignal>(GridMoveCallback);
+            signalBus.Subscribe<GridAddSignal>(GridAddCallback);
+            signalBus.Subscribe<GridRemoveSignal>(GridRemoveCallback);
 		}
 
 		public List<GridSpace> Find(GridSpace from, GridSpace to) {
@@ -79,12 +89,26 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
 			Grid.DisconnectNode(space.AsGridPosition());
 		}
 
+        public void DisconnectAll(List<GridSpace> spaces) {
+            ThrowExceptionIfArgumentIsNull(spaces, "spaces", ExceptionConstants.VA_ARGUMENT_NULL);
+
+			foreach (GridSpace space in spaces)
+                Disconnect(space);
+		}
+
         public void Reconnect(GridSpace space) {
             ThrowExceptionIfArgumentIsNull(space, "space", ExceptionConstants.VA_ARGUMENT_NULL);
             ThrowExceptionIfSpaceIsInvalid(space, "space", ExceptionConstants.VA_SPACE_INVALID);
             ThrowExceptionIfSpaceIsOutOfBounds(space, "space", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
 
 			Grid.ReconnectNode(space.AsGridPosition(), TraversalVelocity);
+		}
+
+        public void Dispose() {
+            signalBus.Unsubscribe<GridRemoveSignal>(GridRemoveCallback);
+            signalBus.Unsubscribe<GridAddSignal>(GridAddCallback);
+            signalBus.Unsubscribe<GridMoveSignal>(GridMoveCallback);
+            signalBus.Unsubscribe<GridInitializeSignal>(GridInitializeCallback);
 		}
 
 		private void ThrowExceptionIfSpaceIsInvalid(GridSpace space, string paramName, string message) {
@@ -105,16 +129,22 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
 			return column >= Grid.Columns;
 		}
 
-		public void DisconnectAll(List<GridSpace> spaces) {
-            ThrowExceptionIfArgumentIsNull(spaces, "spaces", ExceptionConstants.VA_ARGUMENT_NULL);
-
-			foreach (GridSpace space in spaces)
-                Disconnect(space);
-		}
-
         private void ThrowExceptionIfArgumentIsNull(object arg, string paramName, string message) {
 			if (arg == null)
 				throw new ArgumentNullException(paramName, message);
+		}
+
+        private void ThrowExceptionIfGridDetailsIsInvalid(GridDetails gridDetails) {
+			if (!gridDetails.IsNumberOfRowsValid())
+				throw new ArgumentException(
+					string.Format(ExceptionConstants.VA_NUMBER_OF_ROWS_INVALID, gridDetails.NumberOfRows),
+					"gridDetails"
+				);
+			else if (!gridDetails.IsNumberOfColumnsValid())
+				throw new ArgumentException(
+					string.Format(ExceptionConstants.VA_NUMBER_OF_COLUMNS_INVALID, gridDetails.NumberOfColumns),
+					"gridDetails"
+				);
 		}
 	}
 }
