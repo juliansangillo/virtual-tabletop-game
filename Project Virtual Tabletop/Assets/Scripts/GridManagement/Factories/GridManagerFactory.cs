@@ -1,10 +1,11 @@
 using System;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
+using Zenject;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Factories {
 	public class GridManagerFactory {
-		public GridManager CreateGridManager(GridDetails gridDetails) {
+		public GridManager CreateGridManager(GridDetails gridDetails, SignalBus signalBus) {
             ThrowExceptionIfArgumentIsNull(gridDetails);
             ThrowExceptionIfArgumentIsInvalid(gridDetails);
 
@@ -14,7 +15,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Factories {
                 grid[token.CurrentSpace.Row, token.CurrentSpace.Column] = token;
 			}
 
-			return new GridManager(grid);
+			return new GridManager(grid, signalBus);
 		}
 
         private void ThrowExceptionIfArgumentIsNull(GridDetails gridDetails) {

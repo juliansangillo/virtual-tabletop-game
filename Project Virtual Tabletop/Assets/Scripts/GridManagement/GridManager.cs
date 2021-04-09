@@ -1,15 +1,30 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.Exceptions;
+using NaughtyBikerGames.ProjectVirtualTabletop.Extensions;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
+using Zenject;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement {
-	public class GridManager : IGridManager {
-		public Element[,] Grid { get; }
+	public class GridManager : IGridManager, IInitializable {
+		private readonly SignalBus signalBus;
+
+        public Element[,] Grid { get; }
 		
-		public GridManager(Element[,] grid) {
+		public GridManager(Element[,] grid, SignalBus signalBus) {
 			this.Grid = grid;
+            this.signalBus = signalBus;
+		}
+
+        public void Initialize() {
+            IList<Element> elements = Grid.AsFlat().Where(element => element != null).ToList();
+            IList<GridSpace> spaces = elements.Select(element => element.CurrentSpace).ToList();
+
+            signalBus.Fire(new GridInitializeSignal(elements, spaces));
 		}
 
 		public void AddTo(GridSpace space, Element element) {
@@ -20,6 +35,8 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement {
 			ThrowExceptionIfAnElementExistsOnSpace(space, ExceptionConstants.VA_ELEMENT_EXISTS_ON_SPACE);
 
 			Grid[space.Row, space.Column] = element;
+
+            signalBus.Fire(new GridAddSignal(element, space));
 		}
 
 		public Element GetElementOn(GridSpace space) {
@@ -50,6 +67,8 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement {
 
 			Grid[to.Row, to.Column] = Grid[from.Row, from.Column];
 			Grid[from.Row, from.Column] = null;
+
+            signalBus.Fire(new GridMoveSignal(Grid[to.Row, to.Column], from, to));
 		}
 
 		public Element RemoveFrom(GridSpace space) {
@@ -60,6 +79,9 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement {
 
 			Element element = Grid[space.Row, space.Column];
 			Grid[space.Row, space.Column] = null;
+
+            signalBus.Fire(new GridRemoveSignal(element, space));
+
 			return element;
 		}
 

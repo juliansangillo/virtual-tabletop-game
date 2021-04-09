@@ -158,8 +158,8 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
             List<GridSpace> actualSpaces = null;
             List<Element> actualElements = null;
             pathManager.GridInitializeCallback = s => {
-                actualElements = s.Elements;
-                actualSpaces = s.Spaces;
+                actualElements = (List<Element>)s.Elements;
+                actualSpaces = (List<GridSpace>)s.Spaces;
             };
 
             pathManager.Initialize();

@@ -89,7 +89,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
 			Grid.DisconnectNode(space.AsGridPosition());
 		}
 
-        public void DisconnectAll(List<GridSpace> spaces) {
+        public void DisconnectAll(IList<GridSpace> spaces) {
             ThrowExceptionIfArgumentIsNull(spaces, "spaces", ExceptionConstants.VA_ARGUMENT_NULL);
 
 			foreach (GridSpace space in spaces)

@@ -5,14 +5,20 @@ using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Factories;
+using Zenject;
+using NaughtyBikerGames.SDK.Editor.Tests;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
-	public class GridManagerFactoryTests {
-        GridManagerFactory gridManagerFactory;
+	public class GridManagerFactoryTests : ZenjectTests {
+        private GridManagerFactory gridManagerFactory;
+        private SignalBus signalBus;
 
         [SetUp]
         public void SetUp() {
+            SignalBusInstaller.Install(Container);
+
             gridManagerFactory = new GridManagerFactory();
+            signalBus = Container.Resolve<SignalBus>();
         }
 
         [TestCase(5,3,0,0)]
@@ -25,7 +31,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
             gridDetails.Tokens = new List<Token>();
             gridDetails.Tokens.Add(token1);
 
-            GridManager actual = gridManagerFactory.CreateGridManager(gridDetails);
+            GridManager actual = gridManagerFactory.CreateGridManager(gridDetails, signalBus);
 
             Assert.AreEqual(numRows, actual.Grid.GetLength(AppConstants.ROW_DIMENSION));
             Assert.AreEqual(numColumns, actual.Grid.GetLength(AppConstants.COLUMN_DIMENSION));
@@ -46,7 +52,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
             gridDetails.Tokens.Add(token2);
             gridDetails.Tokens.Add(token3);
 
-            GridManager actual = gridManagerFactory.CreateGridManager(gridDetails);
+            GridManager actual = gridManagerFactory.CreateGridManager(gridDetails, signalBus);
 
             Assert.AreEqual(numRows, actual.Grid.GetLength(AppConstants.ROW_DIMENSION));
             Assert.AreEqual(numColumns, actual.Grid.GetLength(AppConstants.COLUMN_DIMENSION));
@@ -71,7 +77,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
             );
 
             Exception actual = Assert.Throws<ArgumentException>(() => {
-                gridManagerFactory.CreateGridManager(gridDetails);
+                gridManagerFactory.CreateGridManager(gridDetails, signalBus);
             });
             Assert.AreEqual(expected.Message, actual.Message);
         }
@@ -92,7 +98,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
             );
 
             Exception actual = Assert.Throws<ArgumentException>(() => {
-                gridManagerFactory.CreateGridManager(gridDetails);
+                gridManagerFactory.CreateGridManager(gridDetails, signalBus);
             });
             Assert.AreEqual(expected.Message, actual.Message);
         }
@@ -107,7 +113,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
             Exception expected = new ArgumentException(ExceptionConstants.VA_LIST_OF_TOKENS_INVALID, "gridDetails");
 
             Exception actual = Assert.Throws<ArgumentException>(() => {
-                gridManagerFactory.CreateGridManager(gridDetails);
+                gridManagerFactory.CreateGridManager(gridDetails, signalBus);
             });
             Assert.AreEqual(expected.Message, actual.Message);
         }
@@ -117,7 +123,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
             Exception expected = new ArgumentNullException("gridDetails", ExceptionConstants.VA_ARGUMENT_NULL);
 
             Exception actual = Assert.Throws<ArgumentNullException>(() => {
-                gridManagerFactory.CreateGridManager(null);
+                gridManagerFactory.CreateGridManager(null, signalBus);
             });
             Assert.AreEqual(expected.Message, actual.Message);
         }
