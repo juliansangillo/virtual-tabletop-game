@@ -64,8 +64,8 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
 
             PathManager pathManager = new PathManager(gridDetails, pathFinder, signalBus);
 
-            Assert.AreEqual(Distance.FromMeters(1), pathManager.CellSize.Width);
-            Assert.AreEqual(Distance.FromMeters(1), pathManager.CellSize.Height);
+            Assert.AreEqual(Distance.FromMeters(AppConstants.SPACE_WIDTH_IN_METERS), pathManager.CellSize.Width);
+            Assert.AreEqual(Distance.FromMeters(AppConstants.SPACE_HEIGHT_IN_METERS), pathManager.CellSize.Height);
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
 
             PathManager pathManager = new PathManager(gridDetails, pathFinder, signalBus);
 
-            Assert.AreEqual(10f, pathManager.TraversalVelocity.KilometersPerHour);
+            Assert.AreEqual(1f, pathManager.TraversalVelocity.KilometersPerHour);
         }
 
         [Test]
@@ -234,19 +234,43 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
         //* Position uses arguments (x, y) and GridSpace uses arguments (row, column) where column == x and row == y.
         //* i.e. Position(0, 1) == GridSpace(1, 0)
 		[Test]
-		public void Find_GivenTwoValidGridSpaces_ReturnListOfGridSpacesThatFallAlongTheShortestPathBetweenGivenSpacesInclusively() {
+		public void Find_GivenTwoValidGridSpaces_ReturnGridPathWithListOfGridSpacesThatFallAlongTheShortestPathBetweenGivenSpacesInclusively() {
 			GridSpace src = new GridSpace(0, 0);
             GridSpace dest = new GridSpace(2, 2);
 
             pathFinder.FindPath(GridPosition.Zero, new GridPosition(2, 2), Arg.Any<Grid>()).Returns(GetStubbedPath());
 
-            List<GridSpace> actual = pathManager.Find(src, dest);
+            List<GridSpace> actual = (List<GridSpace>)pathManager.Find(src, dest).Spaces;
 
             Assert.Contains(new GridSpace(0, 0), actual);
             Assert.Contains(new GridSpace(1, 0), actual);
             Assert.Contains(new GridSpace(1, 1), actual);
             Assert.Contains(new GridSpace(1, 2), actual);
             Assert.Contains(new GridSpace(2, 2), actual);
+		}
+
+        [Test]
+		public void Find_GivenTwoValidGridSpaces_ReturnGridPathWithCountOfSpacesOnPathExclusiveOfStartingSpace() {
+			GridSpace src = new GridSpace(0, 0);
+            GridSpace dest = new GridSpace(2, 2);
+
+            pathFinder.FindPath(GridPosition.Zero, new GridPosition(2, 2), Arg.Any<Grid>()).Returns(GetStubbedPath());
+
+            int actual = pathManager.Find(src, dest).Count;
+
+            Assert.AreEqual(4, actual);
+		}
+
+        [Test]
+		public void Find_GivenTwoValidGridSpaces_ReturnGridPathWithDistanceInMetersOfPathRoundedToNearestWholeNumber() {
+			GridSpace src = new GridSpace(0, 0);
+            GridSpace dest = new GridSpace(2, 2);
+
+            pathFinder.FindPath(GridPosition.Zero, new GridPosition(2, 2), Arg.Any<Grid>()).Returns(GetStubbedPath());
+
+            float actual = pathManager.Find(src, dest).DistanceInMeters;
+
+            Assert.AreEqual(6d, Math.Round(actual));
 		}
 
         [Test]
@@ -368,11 +392,21 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
         }
 
         private Path GetStubbedPath() {
-            List<IEdge> edges = new List<IEdge>();
-            edges.Add(new Edge(new Node(Position.Zero), new Node(new Position(0, 1)), Velocity.FromKilometersPerHour(0)));
-            edges.Add(new Edge(new Node(new Position(0, 1)), new Node(new Position(1, 1)), Velocity.FromKilometersPerHour(0)));
-            edges.Add(new Edge(new Node(new Position(1, 1)), new Node(new Position(2, 1)), Velocity.FromKilometersPerHour(0)));
-            edges.Add(new Edge(new Node(new Position(2, 1)), new Node(new Position(2, 2)), Velocity.FromKilometersPerHour(0)));
+            Size cellSize = new Size(Distance.FromMeters(AppConstants.SPACE_WIDTH_IN_METERS), Distance.FromMeters(AppConstants.SPACE_HEIGHT_IN_METERS));
+            List<IEdge> edges = new List<IEdge> {
+                new Edge(new Node(Position.Zero), 
+                    new Node(Position.FromOffset(cellSize.Width * 0, cellSize.Height * 1)), 
+                    Velocity.FromKilometersPerHour(1)),
+                new Edge(new Node(Position.FromOffset(cellSize.Width * 0, cellSize.Height * 1)), 
+                    new Node(Position.FromOffset(cellSize.Width * 1, cellSize.Height * 1)), 
+                    Velocity.FromKilometersPerHour(1)),
+                new Edge(new Node(Position.FromOffset(cellSize.Width * 1, cellSize.Height * 1)), 
+                    new Node(Position.FromOffset(cellSize.Width * 2, cellSize.Height * 1)), 
+                    Velocity.FromKilometersPerHour(1)),
+                new Edge(new Node(Position.FromOffset(cellSize.Width * 2, cellSize.Height * 1)), 
+                    new Node(Position.FromOffset(cellSize.Width * 2, cellSize.Height * 2)), 
+                    Velocity.FromKilometersPerHour(1))
+            };
             
             return new Path(PathType.Complete, edges);
         }

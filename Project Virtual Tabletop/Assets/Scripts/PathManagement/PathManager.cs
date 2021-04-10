@@ -36,9 +36,9 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
 			ThrowExceptionIfGridDetailsIsInvalid(gridDetails);
 
 			GridSize = new GridSize(gridDetails.NumberOfColumns, gridDetails.NumberOfRows);
-			CellSize = new Size(Distance.FromMeters(1), Distance.FromMeters(1));
-			TraversalVelocity = Velocity.FromKilometersPerHour(10);
-
+			CellSize = new Size(Distance.FromMeters(AppConstants.SPACE_WIDTH_IN_METERS), Distance.FromMeters(AppConstants.SPACE_HEIGHT_IN_METERS));
+			TraversalVelocity = Velocity.FromKilometersPerHour(1);
+            
 			this.Grid = Grid.CreateGridWithLateralConnections(GridSize, CellSize, TraversalVelocity);
 			this.pathFinder = pathFinder;
             this.signalBus = signalBus;
@@ -59,7 +59,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
             signalBus.Subscribe<GridRemoveSignal>(GridRemoveCallback);
 		}
 
-		public List<GridSpace> Find(GridSpace from, GridSpace to) {
+		public GridPath Find(GridSpace from, GridSpace to) {
 			ThrowExceptionIfArgumentIsNull(from, "from", ExceptionConstants.VA_ARGUMENT_NULL);
 			ThrowExceptionIfArgumentIsNull(to, "to", ExceptionConstants.VA_ARGUMENT_NULL);
 			ThrowExceptionIfSpaceIsInvalid(from, "from", ExceptionConstants.VA_SPACE_INVALID);
@@ -70,15 +70,18 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
 			Path path = pathFinder.FindPath(from.AsGridPosition(), to.AsGridPosition(), Grid);
 			Position firstPosition = path.Edges.First().Start.Position;
 
-			List<GridSpace> result = new List<GridSpace>();
-			result.Add(new GridSpace((int)firstPosition.Y, (int)firstPosition.X));
+			ICollection<GridSpace> spaces = new List<GridSpace>();
+			spaces.Add(new GridSpace((int)firstPosition.Y, (int)firstPosition.X));
 
 			foreach (IEdge edge in path.Edges) {
 				Position position = edge.End.Position;
-				result.Add(new GridSpace((int)position.Y, (int)position.X));
+                GridPosition gridPosition = new GridPosition((int)Math.Round(position.X / AppConstants.SPACE_WIDTH_IN_METERS),
+                    (int)Math.Round(position.Y / AppConstants.SPACE_HEIGHT_IN_METERS));
+                
+				spaces.Add(new GridSpace(gridPosition.Y, gridPosition.X));
 			}
 
-			return result;
+			return new GridPath(spaces.Count - 1, path.Distance.Meters, spaces);
 		}
 
 		public void Disconnect(GridSpace space) {
