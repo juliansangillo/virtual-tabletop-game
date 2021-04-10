@@ -26,9 +26,9 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
         [Test]
         public void Initialize_WhenCalled_FireAGridInitializeSignalWithCorrectArgs() {
             GridSpace expectedSpace1 = new GridSpace(0, 1);
-            Element expectedElement1 = new Element(expectedSpace1);
+            Element expectedElement1 = new Token(expectedSpace1);
             GridSpace expectedSpace2 = new GridSpace(1, 1);
-            Element expectedElement2 = new Element(expectedSpace2);
+            Element expectedElement2 = new Token(expectedSpace2);
             Element[,] fakeGrid = new Element[2,2];
 			fakeGrid[0,0] = null;
 			fakeGrid[0,1] = expectedElement1;
@@ -53,7 +53,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void AddTo_GivenSpaceAndAnElement_SetElementToCorrectLocationOnMap() {
-			Element expected = new Element(null);
+			Element expected = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			fakeGrid[0,0] = null;
 			fakeGrid[0,1] = null;
@@ -70,7 +70,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
         [Test]
         public void AddTo_GivenSpaceAndAnElement_FireAGridAddSignalWithCorrectArgs() {
-            Element expected = new Element(null);
+            Element expected = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			fakeGrid[0,0] = null;
 			fakeGrid[0,1] = null;
@@ -94,7 +94,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void AddTo_GivenSpaceWhereAnElementIsAlreadyLocatedOnIt_ThrowInvalidOperationException() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			fakeGrid[0,0] = null;
 			fakeGrid[0,1] = null;
@@ -103,13 +103,13 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 			gridManager = new GridManager(fakeGrid, signalBus);
 
 			Assert.Throws<InvalidOperationException>(() => {
-				gridManager.AddTo(new Entities.GridSpace(1, 1), new Element(null));
+				gridManager.AddTo(new Entities.GridSpace(1, 1), new Token(null));
 			});
 		}
 
 		[Test]
 		public void AddTo_GivenNullSpace_ThrowArgumentNullExceptionWithCorrectMessage() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 
@@ -137,7 +137,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void AddTo_GivenSpaceWhereRowDoesNotExistOnMap_ThrowArgumentException() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace nonExistingSpace = new Entities.GridSpace(5, 1);
@@ -149,7 +149,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void AddTo_GivenSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentException() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace nonExistingSpace = new Entities.GridSpace(1, 5);
@@ -161,7 +161,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void AddTo_GivenInvalidSpaceWhereRowIsNegative_ThrowInvalidSpaceException() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace invalidSpace = new Entities.GridSpace(-1, 0);
@@ -173,7 +173,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void AddTo_GivenInvalidSpaceWhereColumnIsNegative_ThrowInvalidSpaceException() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace invalidSpace = new Entities.GridSpace(0, -1);
@@ -185,8 +185,8 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void GetElementOn_GivenSpace_ReturnCorrectElement() {
-			Element expected = new Element(null);
-			Element notExpected = new Element(null);
+			Element expected = new Token(null);
+			Element notExpected = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			fakeGrid[0,0] = null;
 			fakeGrid[0,1] = expected;
@@ -256,7 +256,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void IsEmpty_GivenSpaceThatExistsOnMapAndSpaceIsEmpty_ReturnTrue() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			fakeGrid[0,0] = element;
 			fakeGrid[0,1] = null;
@@ -272,7 +272,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void IsEmpty_GivenSpaceThatExistsOnMapAndSpaceIsNotEmpty_ReturnFalse() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			fakeGrid[0,0] = element;
 			fakeGrid[0,1] = null;
@@ -298,7 +298,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void IsEmpty_GivenSpaceWhereRowDoesNotExistOnMap_ThrowArgumentException() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace nonExistingSpace = new Entities.GridSpace(5, 1);
@@ -310,7 +310,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void IsEmpty_GivenSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentException() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace nonExistingSpace = new Entities.GridSpace(1, 5);
@@ -322,7 +322,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void IsEmpty_GivenInvalidSpaceWhereRowIsNegative_ThrowInvalidSpaceException() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace invalidSpace = new Entities.GridSpace(-1, 0);
@@ -334,7 +334,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void IsEmpty_GivenInvalidSpaceWhereColumnIsNegative_ThrowInvalidSpaceException() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace invalidSpace = new Entities.GridSpace(0, -1);
@@ -346,7 +346,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void Move_GivenTwoSpacesWhereAnElementIsLocatedOnTheFirstSpaceAndTheSecondSpaceIsEmpty_MoveElementFromTheFirstSpaceToTheSecondSpace() {
-			Element expected = new Element(null);
+			Element expected = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			fakeGrid[0,0] = expected;
 			fakeGrid[0,1] = null;
@@ -362,7 +362,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
         [Test]
         public void Move_GivenTwoSpacesWhereAnElementIsLocatedOnTheFirstSpaceAndTheSecondSpaceIsEmpty_FireAGridMoveSignalWithCorrectArgs() {
-            Element expected = new Element(null);
+            Element expected = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			fakeGrid[0,0] = expected;
 			fakeGrid[0,1] = null;
@@ -390,8 +390,8 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void Move_GivenTwoSpacesWhereAnElementIsAlreadyLocatedOnTheSecondSpace_ThrowInvalidOperationExceptionWithCorrectMessage() {
-			Element element1 = new Element(null);
-			Element element2 = new Element(null);
+			Element element1 = new Token(null);
+			Element element2 = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			fakeGrid[0,0] = element1;
 			fakeGrid[0,1] = null;
@@ -426,7 +426,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void Move_GivenFirstSpaceWhereRowDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace nonExistingSpace = new Entities.GridSpace(5, 1);
@@ -441,7 +441,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void Move_GivenFirstSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace nonExistingSpace = new Entities.GridSpace(1, 5);
@@ -456,7 +456,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void Move_GivenSecondSpaceWhereRowDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace nonExistingSpace = new Entities.GridSpace(5, 1);
@@ -471,7 +471,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void Move_GivenSecondSpaceWhereColumnDoesNotExistOnMap_ThrowArgumentExceptionWithCorrectMessage() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace nonExistingSpace = new Entities.GridSpace(1, 5);
@@ -486,7 +486,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void Move_GivenInvalidFirstSpaceWhereRowIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace invalidSpace = new Entities.GridSpace(-1, 0);
@@ -501,7 +501,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void Move_GivenInvalidFirstSpaceWhereColumnIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace invalidSpace = new Entities.GridSpace(0, -1);
@@ -516,7 +516,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void Move_GivenInvalidSecondSpaceWhereRowIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace invalidSpace = new Entities.GridSpace(-1, 0);
@@ -531,7 +531,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void Move_GivenInvalidSecondSpaceWhereColumnIsNegative_ThrowInvalidSpaceExceptionWithCorrectMessage() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 			Entities.GridSpace invalidSpace = new Entities.GridSpace(0, -1);
@@ -546,7 +546,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void Move_GivenNullFirstSpace_ThrowArgumentNullExceptionWithCorrectMessage() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 
@@ -560,7 +560,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void Move_GivenNullSecondSpace_ThrowArgumentNullExceptionWithCorrectMessage() {
-			Element element = new Element(null);
+			Element element = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			gridManager = new GridManager(fakeGrid, signalBus);
 
@@ -574,7 +574,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
 		[Test]
 		public void RemoveFrom_GivenSpace_RemoveElementFromThatSpaceAndReturnTheElement() {
-			Element expected = new Element(null);
+			Element expected = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			fakeGrid[0,0] = null;
 			fakeGrid[0,1] = expected;
@@ -590,7 +590,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 
         [Test]
         public void RemoveFrom_GivenSpace_FireAGridRemoveSignalWithCorrectArgs() {
-            Element expected = new Element(null);
+            Element expected = new Token(null);
 			Element[,] fakeGrid = new Element[2,2];
 			fakeGrid[0,0] = null;
 			fakeGrid[0,1] = expected;

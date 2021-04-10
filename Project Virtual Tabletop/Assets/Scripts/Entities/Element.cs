@@ -1,5 +1,5 @@
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities {
-	public class Element {
+	public abstract class Element {
 		public GridSpace CurrentSpace { get; set; }
 		
 		public Element(GridSpace space) {
