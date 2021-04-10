@@ -68,17 +68,14 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
 			ThrowExceptionIfSpaceIsOutOfBounds(to, "to", ExceptionConstants.VA_SPACE_OUT_OF_BOUNDS);
 
 			Path path = pathFinder.FindPath(from.AsGridPosition(), to.AsGridPosition(), Grid);
-			Position firstPosition = path.Edges.First().Start.Position;
+			GridPosition firstPosition = GetGridPositionFromRoundedPosition(path.Edges.First().Start.Position);
 
 			ICollection<GridSpace> spaces = new List<GridSpace>();
-			spaces.Add(new GridSpace((int)firstPosition.Y, (int)firstPosition.X));
+			spaces.Add(firstPosition.AsGridSpace());
 
 			foreach (IEdge edge in path.Edges) {
-				Position position = edge.End.Position;
-                GridPosition gridPosition = new GridPosition((int)Math.Round(position.X / AppConstants.SPACE_WIDTH_IN_METERS),
-                    (int)Math.Round(position.Y / AppConstants.SPACE_HEIGHT_IN_METERS));
-                
-				spaces.Add(new GridSpace(gridPosition.Y, gridPosition.X));
+				GridPosition gridPosition = GetGridPositionFromRoundedPosition(edge.End.Position);
+				spaces.Add(gridPosition.AsGridSpace());
 			}
 
 			return new GridPath(spaces.Count - 1, path.Distance.Meters, spaces);
@@ -112,6 +109,11 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
             signalBus.Unsubscribe<GridAddSignal>(GridAddCallback);
             signalBus.Unsubscribe<GridMoveSignal>(GridMoveCallback);
             signalBus.Unsubscribe<GridInitializeSignal>(GridInitializeCallback);
+		}
+
+        private GridPosition GetGridPositionFromRoundedPosition(Position position) {
+			return new GridPosition((int)Math.Round(position.X / AppConstants.SPACE_WIDTH_IN_METERS),
+				(int)Math.Round(position.Y / AppConstants.SPACE_HEIGHT_IN_METERS));
 		}
 
 		private void ThrowExceptionIfSpaceIsInvalid(GridSpace space, string paramName, string message) {
