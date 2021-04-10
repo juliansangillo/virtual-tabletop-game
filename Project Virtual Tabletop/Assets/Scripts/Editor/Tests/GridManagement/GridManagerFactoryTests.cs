@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Zenject;
+using NaughtyBikerGames.SDK.Editor.Tests;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Factories;
-using Zenject;
-using NaughtyBikerGames.SDK.Editor.Tests;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 	public class GridManagerFactoryTests : ZenjectTests {

@@ -1,14 +1,14 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using NUnit.Framework;
+using Zenject;
+using NaughtyBikerGames.SDK.Editor.Tests;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
-using System;
 using NaughtyBikerGames.ProjectVirtualTabletop.Exceptions;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
-using NaughtyBikerGames.SDK.Editor.Tests;
-using Zenject;
-using NaughtyBikerGames.ProjectVirtualTabletop.Signals.Installers;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
-using System.Collections.Generic;
+using NaughtyBikerGames.ProjectVirtualTabletop.Signals.Installers;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
 	public class GridManagerTests : ZenjectTests {

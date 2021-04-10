@@ -5,13 +5,13 @@ using Roy_T.AStar.Graphs;
 using Roy_T.AStar.Grids;
 using Roy_T.AStar.Paths;
 using Roy_T.AStar.Primitives;
+using Zenject;
 using NaughtyBikerGames.ProjectVirtualTabletop.Adapters.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.Exceptions;
-using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Extensions;
-using Zenject;
+using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {

@@ -1,6 +1,5 @@
-using System;
-using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using Roy_T.AStar.Primitives;
+using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Extensions {
 	public static class GridPositionExtensions {

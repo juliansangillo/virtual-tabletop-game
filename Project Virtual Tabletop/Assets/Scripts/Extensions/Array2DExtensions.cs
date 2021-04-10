@@ -1,4 +1,3 @@
-using System;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Extensions {

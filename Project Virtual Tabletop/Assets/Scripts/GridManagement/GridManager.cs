@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Zenject;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.Exceptions;
 using NaughtyBikerGames.ProjectVirtualTabletop.Extensions;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
-using Zenject;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement {
 	public class GridManager : IGridManager, IInitializable {

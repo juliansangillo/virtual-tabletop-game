@@ -1,7 +1,7 @@
 using System;
+using Zenject;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
-using Zenject;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Factories {
 	public class GridManagerFactory {

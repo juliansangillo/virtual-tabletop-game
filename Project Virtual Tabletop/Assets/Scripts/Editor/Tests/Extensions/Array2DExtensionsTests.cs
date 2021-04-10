@@ -1,6 +1,6 @@
 using System;
-using NaughtyBikerGames.ProjectVirtualTabletop.Extensions;
 using NUnit.Framework;
+using NaughtyBikerGames.ProjectVirtualTabletop.Extensions;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.Extensions {
 	public class Array2DExtensionsTests {
