@@ -18,7 +18,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Installers {
         }
 
 		public override void InstallBindings() {
-			Container.BindInterfacesTo<IPathManager>()
+			Container.BindInterfacesTo<PathManager>()
                 .FromInstance(new PathManager(gridDetails, pathFinder, signalBus))
                 .AsSingle();
 		}
