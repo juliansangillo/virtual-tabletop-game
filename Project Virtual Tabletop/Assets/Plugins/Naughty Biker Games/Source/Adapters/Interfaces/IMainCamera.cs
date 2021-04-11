@@ -6,7 +6,7 @@ namespace NaughtyBikerGames.SDK.Adapters.Interfaces {
 	* Camera.main specifically targets the main camera.
 	*
 	* @author Julian Sangillo \<https://github.com/juliansangillo\>
-	* @version 3.0
+	* @version 4.0
 	* @since 3.0
 	*/
 	public interface IMainCamera {

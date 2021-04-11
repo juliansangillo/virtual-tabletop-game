@@ -18,7 +18,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.GridManagement {
         [SetUp]
         public void SetUp() {
             SignalBusInstaller.Install(Container);
-            GridSignalsBaseInstaller.Install(Container);
+            GridSignalsInstaller.Install(Container);
 
             signalBus = Container.Resolve<SignalBus>();
         }

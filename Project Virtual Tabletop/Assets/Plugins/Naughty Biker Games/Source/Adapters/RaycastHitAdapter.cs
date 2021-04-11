@@ -6,7 +6,7 @@ namespace NaughtyBikerGames.SDK.Adapters {
 	* Default implementation of IRaycastHit.
 	*
 	* @author Julian Sangillo \<https://github.com/juliansangillo\>
-	* @version 3.0
+	* @version 4.0
 	* @since 3.0
 	*/
 	public class RaycastHitAdapter : IRaycastHit {

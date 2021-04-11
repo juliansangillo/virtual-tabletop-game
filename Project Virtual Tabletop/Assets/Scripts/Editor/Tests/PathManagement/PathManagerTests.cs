@@ -26,7 +26,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
         [SetUp]
         public void SetUp() {
             SignalBusInstaller.Install(Container);
-            GridSignalsBaseInstaller.Install(Container);
+            GridSignalsInstaller.Install(Container);
 
             GridDetails gridDetails = new GridDetails();
             gridDetails.NumberOfRows = 3;

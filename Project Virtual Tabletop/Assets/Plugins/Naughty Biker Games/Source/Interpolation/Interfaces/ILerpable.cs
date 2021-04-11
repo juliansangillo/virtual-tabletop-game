@@ -15,7 +15,7 @@ namespace NaughtyBikerGames.SDK.Interpolation.Interfaces {
     * be a straight line. A Lerp does NOT allow values to be eased in and/or out.
     *
     * @author Julian Sangillo \<https://github.com/juliansangillo\>
-    * @version 3.0
+    * @version 4.0
     * @since 3.0
     */
 	public interface ILerpable {
