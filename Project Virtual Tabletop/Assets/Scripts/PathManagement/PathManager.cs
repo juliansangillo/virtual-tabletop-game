@@ -25,10 +25,10 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
 
 		public Grid Grid { get; private set; }
 
-        internal Action<GridInitializeSignal> GridInitializeCallback { get; set; }
-        internal Action<GridMoveSignal> GridMoveCallback { get; set; }
-        internal Action<GridAddSignal> GridAddCallback { get; set; }
-        internal Action<GridRemoveSignal> GridRemoveCallback { get; set; }
+        internal Action<GridInitializeSignal> OnGridInitialize { get; set; }
+        internal Action<GridMoveSignal> OnGridMove { get; set; }
+        internal Action<GridAddSignal> OnGridAdd { get; set; }
+        internal Action<GridRemoveSignal> OnGridRemove { get; set; }
 
 		public PathManager(GridDetails gridDetails, IPathFinder pathFinder, SignalBus signalBus) {
 			ThrowExceptionIfArgumentIsNull(gridDetails, "gridDetails", ExceptionConstants.VA_ARGUMENT_NULL);
@@ -43,20 +43,20 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
 			this.pathFinder = pathFinder;
             this.signalBus = signalBus;
 
-            this.GridInitializeCallback = s => DisconnectAll(s.Spaces);
-            this.GridMoveCallback = s => {
+            this.OnGridInitialize = s => DisconnectAll(s.Spaces);
+            this.OnGridMove = s => {
                 Reconnect(s.From);
                 Disconnect(s.To);
             };
-            this.GridAddCallback = s => Disconnect(s.Space);
-            this.GridRemoveCallback = s => Reconnect(s.Space);
+            this.OnGridAdd = s => Disconnect(s.Space);
+            this.OnGridRemove = s => Reconnect(s.Space);
 		}
 
         public void Initialize() {
-			signalBus.Subscribe<GridInitializeSignal>(GridInitializeCallback);
-            signalBus.Subscribe<GridMoveSignal>(GridMoveCallback);
-            signalBus.Subscribe<GridAddSignal>(GridAddCallback);
-            signalBus.Subscribe<GridRemoveSignal>(GridRemoveCallback);
+			signalBus.Subscribe<GridInitializeSignal>(OnGridInitialize);
+            signalBus.Subscribe<GridMoveSignal>(OnGridMove);
+            signalBus.Subscribe<GridAddSignal>(OnGridAdd);
+            signalBus.Subscribe<GridRemoveSignal>(OnGridRemove);
 		}
 
 		public GridPath Find(GridSpace from, GridSpace to) {
@@ -105,10 +105,10 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
 		}
 
         public void Dispose() {
-            signalBus.Unsubscribe<GridRemoveSignal>(GridRemoveCallback);
-            signalBus.Unsubscribe<GridAddSignal>(GridAddCallback);
-            signalBus.Unsubscribe<GridMoveSignal>(GridMoveCallback);
-            signalBus.Unsubscribe<GridInitializeSignal>(GridInitializeCallback);
+            signalBus.Unsubscribe<GridRemoveSignal>(OnGridRemove);
+            signalBus.Unsubscribe<GridAddSignal>(OnGridAdd);
+            signalBus.Unsubscribe<GridMoveSignal>(OnGridMove);
+            signalBus.Unsubscribe<GridInitializeSignal>(OnGridInitialize);
 		}
 
         private GridPosition GetGridPositionFromRoundedPosition(Position position) {

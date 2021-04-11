@@ -157,7 +157,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
             
             List<GridSpace> actualSpaces = null;
             List<Element> actualElements = null;
-            pathManager.GridInitializeCallback = s => {
+            pathManager.OnGridInitialize = s => {
                 actualElements = (List<Element>)s.Elements;
                 actualSpaces = (List<GridSpace>)s.Spaces;
             };
@@ -178,7 +178,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
             GridSpace actualFrom = null;
             GridSpace actualTo = null;
             Element actualElement = null;
-            pathManager.GridMoveCallback = s => {
+            pathManager.OnGridMove = s => {
                 actualElement = s.Element;
                 actualFrom = s.From;
                 actualTo = s.To;
@@ -199,7 +199,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
 
             GridSpace actualSpace = null;
             Element actualElement = null;
-            pathManager.GridAddCallback = s => {
+            pathManager.OnGridAdd = s => {
                 actualElement = s.Element;
                 actualSpace = s.Space;
             };
@@ -218,7 +218,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
 
             GridSpace actualSpace = null;
             Element actualElement = null;
-            pathManager.GridRemoveCallback = s => {
+            pathManager.OnGridRemove = s => {
                 actualElement = s.Element;
                 actualSpace = s.Space;
             };
@@ -575,10 +575,10 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
 
         [Test]
         public void Dispose_WhenCalled_UnsubscribeFromAllSignals() {
-            signalBus.Subscribe<GridInitializeSignal>(pathManager.GridInitializeCallback);
-            signalBus.Subscribe<GridMoveSignal>(pathManager.GridMoveCallback);
-            signalBus.Subscribe<GridAddSignal>(pathManager.GridAddCallback);
-            signalBus.Subscribe<GridRemoveSignal>(pathManager.GridRemoveCallback);
+            signalBus.Subscribe<GridInitializeSignal>(pathManager.OnGridInitialize);
+            signalBus.Subscribe<GridMoveSignal>(pathManager.OnGridMove);
+            signalBus.Subscribe<GridAddSignal>(pathManager.OnGridAdd);
+            signalBus.Subscribe<GridRemoveSignal>(pathManager.OnGridRemove);
 
             pathManager.Dispose();
 
