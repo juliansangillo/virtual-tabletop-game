@@ -15,6 +15,9 @@ using NaughtyBikerGames.ProjectVirtualTabletop.Exceptions;
 using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals.Installers;
+using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Installers;
+using NaughtyBikerGames.ProjectVirtualTabletop.Entities.Installers;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
 	public class PathManagerTests : ZenjectTests {
@@ -83,6 +86,67 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
         }
 
         [Test]
+        public void PathManager_GivenSignalBus_FiringGridInitializeSignalCallsDisconnectAllWithCorrectArgs() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            GridSpace space = new GridSpace(1, 0);
+            spaces.Add(space);
+            GridDetails gridDetails = new GridDetails();
+            gridDetails.NumberOfRows = 3;
+            gridDetails.NumberOfColumns = 3;
+            PathManager pathManager = Substitute.ForPartsOf<PathManager>(gridDetails, pathFinder, signalBus);
+            pathManager.When(x => x.DisconnectAll(default)).DoNotCallBase();
+
+            signalBus.Fire(new GridInitializedSignal(null, spaces));
+
+            pathManager.Received(1).DisconnectAll(spaces);
+        }
+
+        [Test]
+        public void PathManager_GivenSignalBus_FiringGridMoveSignalCallsReconnectAndDisconnectWithCorrectArgs() {
+            GridSpace from = new GridSpace(0, 0);
+            GridSpace to = new GridSpace(2, 2);
+            GridDetails gridDetails = new GridDetails();
+            gridDetails.NumberOfRows = 3;
+            gridDetails.NumberOfColumns = 3;
+            PathManager pathManager = Substitute.ForPartsOf<PathManager>(gridDetails, pathFinder, signalBus);
+            pathManager.When(x => x.Reconnect(default)).DoNotCallBase();
+            pathManager.When(x => x.Disconnect(default)).DoNotCallBase();
+
+            signalBus.Fire(new GridMovedSignal(null, from, to));
+
+            pathManager.Received(1).Reconnect(from);
+            pathManager.Received(1).Disconnect(to);
+        }
+
+        [Test]
+        public void PathManager_GivenSignalBus_FiringGridAddSignalCallsDisconnectWithCorrectArgs() {
+            GridSpace space = new GridSpace(1, 1);
+            GridDetails gridDetails = new GridDetails();
+            gridDetails.NumberOfRows = 3;
+            gridDetails.NumberOfColumns = 3;
+            PathManager pathManager = Substitute.ForPartsOf<PathManager>(gridDetails, pathFinder, signalBus);
+            pathManager.When(x => x.Disconnect(default)).DoNotCallBase();
+
+            signalBus.Fire(new GridAddedSignal(null, space));
+
+            pathManager.Received(1).Disconnect(space);
+        }
+
+        [Test]
+        public void PathManager_GivenSignalBus_FiringGridRemoveSignalCallsReconnectWithCorrectArgs() {
+            GridSpace space = new GridSpace(1, 1);
+            GridDetails gridDetails = new GridDetails();
+            gridDetails.NumberOfRows = 3;
+            gridDetails.NumberOfColumns = 3;
+            PathManager pathManager = Substitute.ForPartsOf<PathManager>(gridDetails, pathFinder, signalBus);
+            pathManager.When(x => x.Reconnect(default)).DoNotCallBase();
+
+            signalBus.Fire(new GridRemovedSignal(null, space));
+
+            pathManager.Received(1).Reconnect(space);
+        }
+
+        [Test]
         public void PathManager_GivenNullGridDetails_ThrowArgumentNullException() {
             IPathFinder pathFinder = Substitute.For<IPathFinder>();
             SignalBus signalBus = Container.Resolve<SignalBus>();
@@ -144,90 +208,6 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
                 new PathManager(gridDetails, pathFinder, signalBus);
             });
             Assert.AreEqual(expected.Message, actual.Message);
-        }
-
-        [Test]
-        public void Initialize_GivenSignalBus_FiringTheGridInitializeSignalCallsSubscriptionToGridInitializeCallbackWithCorrectArgs() {
-            List<GridSpace> spaces = new List<GridSpace>();
-            GridSpace space = new GridSpace(1, 0);
-            spaces.Add(space);
-            List<Element> elements = new List<Element>();
-            Token token = new Token(space);
-            elements.Add(token);
-            
-            List<GridSpace> actualSpaces = null;
-            List<Element> actualElements = null;
-            pathManager.OnGridInitialize = s => {
-                actualElements = (List<Element>)s.Elements;
-                actualSpaces = (List<GridSpace>)s.Spaces;
-            };
-
-            pathManager.Initialize();
-            signalBus.Fire(new GridInitializeSignal(elements, spaces));
-
-            Assert.AreEqual(elements, actualElements);
-            Assert.AreEqual(spaces, actualSpaces);
-        }
-
-        [Test]
-        public void Initialize_GivenSignalBus_FiringTheGridMoveSignalCallsSubscriptionToGridMoveCallbackWithCorrectArgs() {
-            GridSpace from = new GridSpace(0, 0);
-            GridSpace to = new GridSpace(2, 2);
-            Token token = new Token(from);
-
-            GridSpace actualFrom = null;
-            GridSpace actualTo = null;
-            Element actualElement = null;
-            pathManager.OnGridMove = s => {
-                actualElement = s.Element;
-                actualFrom = s.From;
-                actualTo = s.To;
-            };
-
-            pathManager.Initialize();
-            signalBus.Fire(new GridMoveSignal(token, from, to));
-
-            Assert.AreEqual(token, actualElement);
-            Assert.AreEqual(from, actualFrom);
-            Assert.AreEqual(to, actualTo);
-        }
-
-        [Test]
-        public void Initialize_GivenSignalBus_FiringTheGridAddSignalCallsSubscriptionToGridAddCallbackWithCorrectArgs() {
-            GridSpace space = new GridSpace(1, 1);
-            Token token = new Token(space);
-
-            GridSpace actualSpace = null;
-            Element actualElement = null;
-            pathManager.OnGridAdd = s => {
-                actualElement = s.Element;
-                actualSpace = s.Space;
-            };
-
-            pathManager.Initialize();
-            signalBus.Fire(new GridAddSignal(token, space));
-
-            Assert.AreEqual(token, actualElement);
-            Assert.AreEqual(space, actualSpace);
-        }
-
-        [Test]
-        public void Initialize_GivenSignalBus_FiringTheGridRemoveSignalCallsSubscriptionToGridRemoveCallbackWithCorrectArgs() {
-            GridSpace space = new GridSpace(1, 1);
-            Token token = new Token(space);
-
-            GridSpace actualSpace = null;
-            Element actualElement = null;
-            pathManager.OnGridRemove = s => {
-                actualElement = s.Element;
-                actualSpace = s.Space;
-            };
-
-            pathManager.Initialize();
-            signalBus.Fire(new GridRemoveSignal(token, space));
-
-            Assert.AreEqual(token, actualElement);
-            Assert.AreEqual(space, actualSpace);
         }
 
         //* The logical values used between Roy_T.AStar's Position and our GridSpace is flipped. This is because
@@ -575,11 +555,6 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
 
         [Test]
         public void Dispose_WhenCalled_UnsubscribeFromAllSignals() {
-            signalBus.Subscribe<GridInitializeSignal>(pathManager.OnGridInitialize);
-            signalBus.Subscribe<GridMoveSignal>(pathManager.OnGridMove);
-            signalBus.Subscribe<GridAddSignal>(pathManager.OnGridAdd);
-            signalBus.Subscribe<GridRemoveSignal>(pathManager.OnGridRemove);
-
             pathManager.Dispose();
 
             Assert.AreEqual(0, signalBus.NumSubscribers);
