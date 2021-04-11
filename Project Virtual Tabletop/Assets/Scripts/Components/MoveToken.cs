@@ -3,10 +3,11 @@ using Zenject;
 using NaughtyBikerGames.SDK.Interpolation.Interfaces;
 using NaughtyBikerGames.SDK.Raycast.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
+using NaughtyBikerGames.ProjectVirtualTabletop.Components.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
-using NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components.Interfaces;
 
-namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
+namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
 	public class MoveToken : MonoBehaviour {
         [SerializeField] private GridSpaceMono currentSpace;
         [SerializeField] private int maxHeight;

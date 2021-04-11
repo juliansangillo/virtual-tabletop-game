@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
-using NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.Components.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 
-namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
+namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
 	public class GridSpaceMono : MonoBehaviour {
         [SerializeField] private int row;
         [SerializeField] private int col;

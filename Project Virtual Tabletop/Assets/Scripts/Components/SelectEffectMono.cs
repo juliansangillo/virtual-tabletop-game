@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.Components.Interfaces;
 
-namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components {
+namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
     public class SelectEffectMono : MonoBehaviour, ISelectEffect {
         [SerializeField] private ParticleSystem selectEffect;
 

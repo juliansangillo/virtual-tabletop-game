@@ -10,11 +10,11 @@ using NaughtyBikerGames.SDK.Interpolation.Interfaces;
 using NaughtyBikerGames.SDK.Raycast.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
-using NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components;
+using NaughtyBikerGames.ProjectVirtualTabletop.Components;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
-using NaughtyBikerGames.ProjectVirtualTabletop.Entities.Components.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.Components.Interfaces;
 
-namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Entities.Components {
+namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components {
 	public class MoveTokenTests : MonobehaviourTests {
 		GameObject tileObject1;
 		GameObject tileObject2;
