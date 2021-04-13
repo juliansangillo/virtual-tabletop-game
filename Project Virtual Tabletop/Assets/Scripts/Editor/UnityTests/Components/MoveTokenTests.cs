@@ -13,9 +13,12 @@ using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Components;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Components.Interfaces;
+using Zenject;
+using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
+using NaughtyBikerGames.ProjectVirtualTabletop.Signals.Installers;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components {
-	public class MoveTokenTests : MonobehaviourTests {
+	public class MoveTokenTests : ZenjectMonobehaviourTests {
 		GameObject tileObject1;
 		GameObject tileObject2;
         GameObject tokenObject;
@@ -27,14 +30,20 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
 		IGridManager gridManager;
 		ILerpable lerpable;
 		IRaycastable raycastable;
+        SignalBus signalBus;
 
 		[SetUp]
 		public void SetUp() {
+            SignalBusInstaller.Install(Container);
+            TokenSignalsInstaller.Install(Container);
+
 			gridManager = Substitute.For<IGridManager>();
 			lerpable = Substitute.For<ILerpable>();
 			raycastable = Substitute.For<IRaycastable>();
 			selectEffect1 = Substitute.For<ISelectEffect>();
 			selectEffect2 = Substitute.For<ISelectEffect>();
+
+            signalBus = Container.Resolve<SignalBus>();
 
 			tileObject1 = new GameObject();
 			tileObject1.transform.position = new Vector3(1, 0, 1);
@@ -59,7 +68,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
 			moveToken.MaxHeight = 1;
 			moveToken.LerpDuration = 0f;
 
-			moveToken.Construct(gridManager, lerpable, raycastable);
+			moveToken.Construct(gridManager, lerpable, raycastable, signalBus);
 
 			gridManager.GetElementOn(gridSpace1.Space).Returns(token);
 		}
@@ -111,6 +120,22 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
 
 			selectEffect1.Received().Play();
 		}
+
+        [UnityTest]
+        public IEnumerator OnMouseDown_WhenTriggered_FireTokenSelectedSignal() {
+            GridSpace currentSpace = null;
+            signalBus.Subscribe<TokenSelectedSignal>(s => {
+                currentSpace = s.CurrentSpace;
+            });
+            
+            yield return null;
+
+            moveToken.OnMouseDown();
+
+            yield return null;
+
+            Assert.AreEqual(new GridSpace(0, 0), currentSpace);
+        }
 
 		[UnityTest]
 		public IEnumerator OnMouseDrag_WhenTriggered_RaycastableIsCalledOnceWithCorrectArgument() {
@@ -196,6 +221,28 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
 			selectEffect1.Received().Stop();
 			selectEffect2.Received().Play();
 		}
+
+        [UnityTest]
+        public IEnumerator OnMouseDrag_WhenTriggered_FireTokenDraggedSignal() {
+            GridSpace source = null;
+            GridSpace destination = null;
+            signalBus.Subscribe<TokenDraggedSignal>(s => {
+                source = s.Source;
+                destination = s.Destination;
+            });
+
+            raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG).Returns(tileObject2);
+			gridManager.IsEmpty(tileObject2.GetComponent<GridSpaceMono>().Space).Returns(true);
+
+            yield return null;
+
+            moveToken.OnMouseDrag();
+
+            yield return null;
+
+            Assert.AreEqual(tileObject1.GetComponent<GridSpaceMono>().Space, source);
+            Assert.AreEqual(tileObject2.GetComponent<GridSpaceMono>().Space, destination);
+        }
 
 		[UnityTest]
 		public IEnumerator OnMouseUp_WhenTriggered_RaycastableIsCalledOnceWithCorrectArgument() {
@@ -335,5 +382,74 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
 			selectEffect2.Received().Stop();
 			Assert.AreEqual(selectEffect2, moveToken.InitialSelectEffect);
 		}
+
+        [UnityTest]
+        public IEnumerator OnMouseUp_GivenTokenWasMovedAndCastRayForTagReturnedTileThatIsEmpty_FireTokenReleasedSignalWithValidDestination() {
+            tokenObject.transform.position = new Vector3(2, 1, 2);
+            GridSpace source = null;
+            GridSpace destination = null;
+            signalBus.Subscribe<TokenReleasedSignal>(s => {
+                source = s.Source;
+                destination = s.Destination;
+            });
+
+            raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG).Returns(tileObject2);
+			gridManager.IsEmpty(tileObject2.GetComponent<GridSpaceMono>().Space).Returns(true);
+
+            yield return null;
+
+            moveToken.OnMouseUp();
+
+            yield return null;
+
+            Assert.AreEqual(tileObject1.GetComponent<GridSpaceMono>().Space, source);
+            Assert.True(destination.IsValid());
+            Assert.AreEqual(tileObject2.GetComponent<GridSpaceMono>().Space, destination);
+        }
+
+        [UnityTest]
+        public IEnumerator OnMouseUp_GivenTokenWasMovedAndCastRayForTagReturnedTileThatIsNotEmpty_FireTokenReleasedSignalWithInvalidDestination() {
+            tokenObject.transform.position = new Vector3(2, 1, 2);
+            GridSpace source = null;
+            GridSpace destination = null;
+            signalBus.Subscribe<TokenReleasedSignal>(s => {
+                source = s.Source;
+                destination = s.Destination;
+            });
+
+            raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG).Returns(tileObject2);
+			gridManager.IsEmpty(tileObject2.GetComponent<GridSpaceMono>().Space).Returns(false);
+
+            yield return null;
+
+            moveToken.OnMouseUp();
+
+            yield return null;
+
+            Assert.AreEqual(tileObject1.GetComponent<GridSpaceMono>().Space, source);
+            Assert.False(destination.IsValid());
+        }
+
+        [UnityTest]
+        public IEnumerator OnMouseUp_GivenTokenWasMovedAndCastRayForTagReturnedNullGameObject_FireTokenReleasedSignalWithInvalidDestination() {
+            tokenObject.transform.position = new Vector3(2, 1, 2);
+            GridSpace source = null;
+            GridSpace destination = null;
+            signalBus.Subscribe<TokenReleasedSignal>(s => {
+                source = s.Source;
+                destination = s.Destination;
+            });
+
+            raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG).ReturnsNull();
+
+            yield return null;
+
+            moveToken.OnMouseUp();
+
+            yield return null;
+
+            Assert.AreEqual(tileObject1.GetComponent<GridSpaceMono>().Space, source);
+            Assert.False(destination.IsValid());
+        }
 	}
 }

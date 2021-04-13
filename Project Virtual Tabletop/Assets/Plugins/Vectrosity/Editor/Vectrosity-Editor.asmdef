@@ -1,11 +1,11 @@
 {
-    "name": "ProjectVirtualTabletop",
+    "name": "Vectrosity-Editor",
     "references": [
-        "GUID:1b7e5cb7af9b7a7318402a44ba4afab9",
-        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
         "GUID:e6b2ff5902fbccd63b5ccb77f2b108b9"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

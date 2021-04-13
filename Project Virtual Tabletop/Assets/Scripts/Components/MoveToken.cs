@@ -6,6 +6,7 @@ using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Components.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
 	public class MoveToken : MonoBehaviour {
@@ -19,6 +20,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
         private IGridManager gridManager;
         private ILerpable lerpable;
         private IRaycastable raycastable;
+        private SignalBus signalBus;
 
         public GridSpaceMono CurrentSpace {
             set {
@@ -54,10 +56,11 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
         public ISelectEffect CurrentSelectEffect { get; internal set; }
 
         [Inject]
-        public void Construct(IGridManager gridManager, ILerpable lerpable, IRaycastable raycastable) {
+        public void Construct(IGridManager gridManager, ILerpable lerpable, IRaycastable raycastable, SignalBus signalBus) {
             this.gridManager = gridManager;
             this.lerpable = lerpable;
             this.raycastable = raycastable;
+            this.signalBus = signalBus;
         }
 
         public void Start() {
@@ -75,12 +78,27 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
             StartCoroutine(lerpable.Lerp(source, destination, lerpDuration, current => transform.position = current));
 
             CurrentSelectEffect.Play();
+
+            signalBus.Fire(new TokenSelectedSignal(token.CurrentSpace));
         }
 
         public void OnMouseDrag() {
             GameObject hitObject = raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG);
             if(hitObject != null)
                 MoveToNewTileIfSpaceIsValid(hitObject);
+        }
+
+        public void OnMouseUp() {
+            CurrentSelectEffect.Stop();
+
+            GameObject hitObject = raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG);
+            if(hitObject != null)
+                PlaceDownOnNewTileIfSpaceIsEmpty(hitObject);
+            else {
+                SnapBackToInitialPosition();
+                SnapBackToInitialSelectEffect();
+                signalBus.Fire(new TokenReleasedSignal(token.CurrentSpace, new GridSpace(-1, -1)));
+            }
         }
 
         private void MoveToNewTileIfSpaceIsValid(GameObject hitObject) {
@@ -90,6 +108,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
             if(IsNotCurrentPosition(destination) && IsSpaceEmpty(newSpace)) {
                 transform.position = destination;
                 UpdateSelectEffects(hitObject);
+                signalBus.Fire(new TokenDraggedSignal(token.CurrentSpace, newSpace));
             }
         }
 
@@ -105,28 +124,19 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
             return Vector3.Distance(destination, transform.position) != 0f;
         }
 
-        public void OnMouseUp() {
-            CurrentSelectEffect.Stop();
-
-            GameObject hitObject = raycastable.CastRayForTag(AppConstants.GRID_SPACE_TAG);
-            if(hitObject != null)
-                PlaceDownOnNewTileIfSpaceIsEmpty(hitObject);
-            else {
-                SnapBackToInitialPosition();
-                SnapBackToInitialSelectEffect();
-            }
-        }
-
         private void PlaceDownOnNewTileIfSpaceIsEmpty(GameObject hitObject) {
+            GridSpace oldSpace = token.CurrentSpace;
             GridSpace newSpace = hitObject.GetComponent<GridSpaceMono>().Space;
             if(IsSpaceEmpty(newSpace)) {
                 MoveTokenOnGrid(newSpace);
                 PlaceDownOnTile();
                 UpdateInitialSelectEffect();
+                signalBus.Fire(new TokenReleasedSignal(oldSpace, newSpace));
             }
             else {
                 SnapBackToInitialPosition();
                 SnapBackToInitialSelectEffect();
+                signalBus.Fire(new TokenReleasedSignal(oldSpace, new GridSpace(-1, -1)));
             }
         }
 
