@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
+using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
 using UnityEngine;
 using Vectrosity;
 using Zenject;
@@ -17,9 +19,9 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
         private IPathManager pathManager;
         private SignalBus signalBus;
 
-        private readonly List<Vector3> points = new List<Vector3>();
+        private VectorLine line;
 
-        public VectorLine Line { get; internal set; }
+        public List<Vector3> Points { get; } = new List<Vector3>();
 
         public Camera LineCamera {
             set {
@@ -57,6 +59,16 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
             }
         }
 
+        public VectorLine Line {
+            get {
+                return line;
+            }
+            internal set {
+                VectorLine.Destroy(ref line);
+                line = value;
+            }
+        }
+
         [Inject]
         public void Construct(IPathManager pathManager, SignalBus signalBus) {
             this.pathManager = pathManager;
@@ -67,13 +79,14 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
             VectorLine.SetCamera3D(lineCamera);
             VectorLine.SetEndCap("Ray", EndCap.Both, -1.0f, lineTexture, frontTexture, backTexture);
 
-            Line = new VectorLine($"{gameObject.name} Line", new List<Vector3>(), AppConstants.PATH_WIDTH_IN_PIXELS);
+            signalBus.Subscribe<TokenSelectedSignal>(s => OnTokenSelect(s.CurrentSpace));
+        }
+
+        public void OnTokenSelect(GridSpace current) {
+            line = new VectorLine($"{gameObject.name}_Line", Points, AppConstants.PATH_WIDTH_IN_PIXELS);
         }
 
         public void OnDestroy() {
-            VectorLine line = Line;
-            Line = null;
-
             VectorLine.Destroy(ref line);
         }
 

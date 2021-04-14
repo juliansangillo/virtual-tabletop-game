@@ -27,7 +27,8 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities {
 		}
 
 		public override bool Equals(object obj) {
-			return obj is GridSpace space &&
+			return obj != null &&
+                   obj is GridSpace space &&
 				   Row == space.Row &&
 				   Column == space.Column;
 		}
@@ -42,5 +43,8 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities {
 		public override string ToString() {
 			return base.ToString() + $" ({Row}, {Column})";
 		}
+
+        public static bool operator ==(GridSpace left, GridSpace right) => left?.Equals(right) ?? object.Equals(right, null);
+        public static bool operator !=(GridSpace left, GridSpace right) => !left?.Equals(right) ?? !object.Equals(right, null);
 	}
 }
