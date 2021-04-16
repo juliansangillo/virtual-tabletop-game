@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using NaughtyBikerGames.ProjectVirtualTabletop.Adapters.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Components;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
@@ -26,6 +27,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
         Texture2D pointTexture;
 
         IPathManager pathManagerMock;
+        IVectorLine vectorLineMock;
         SignalBus signalBus;
 
         GameObject gameObject1;
@@ -49,6 +51,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
             pointTexture = new Texture2D(32, 32);
 
             pathManagerMock = Substitute.For<IPathManager>();
+            vectorLineMock = Substitute.For<IVectorLine>();
             signalBus = Container.Resolve<SignalBus>();
 
             gameObject1 = new GameObject("Tile 1");
@@ -77,29 +80,39 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
             drawPath.BackTexture = backTexture;
             drawPath.PointTexture = pointTexture;
 
-            drawPath.Construct(pathManagerMock, signalBus);
+            drawPath.Construct(pathManagerMock, vectorLineMock, signalBus);
         }
 
         [UnityTest]
-        public IEnumerator OnTokenSelect_GivenLineIsNotAlreadySet_ThenSetLineWithUniqueName_AListOfVector3s_AndAWidth() {
-            drawPath.Points.Add(new Vector3());
-            
+        public IEnumerator Start_WhenCalled_SetVectorLineCamera3D() {
+            yield return null;
+
+            vectorLineMock.Received(1).SetCamera3D(lineCamera);
+        }
+
+        [UnityTest]
+        public IEnumerator Start_WhenCalled_SetVectorLineEndCap() {
+            yield return null;
+
+            vectorLineMock.Received(1).SetEndCap("Ray", EndCap.Both, -1.0f, lineTexture, frontTexture, backTexture);
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenSelect_WhenTokenSelectedSignalIsFired_ThenSetLineWithUniqueName_AListOfVector3s_AndAWidth() {
             yield return null;
 
             signalBus.Fire(new TokenSelectedSignal(new GridSpace(0, 1)));
 
             yield return null;
 
-            Assert.IsNotNull(drawPath.Line);
-            Assert.AreEqual("Token_Line", drawPath.Line.name);
-            Assert.AreEqual(drawPath.Points, drawPath.Line.points3);
-            Assert.AreEqual(AppConstants.PATH_WIDTH_IN_PIXELS, drawPath.Line.lineWidth);
+            Assert.IsNotNull(vectorLineMock.Line);
+            Assert.AreEqual("Token_Line", vectorLineMock.Line.name);
+            Assert.AreEqual(drawPath.Points, vectorLineMock.Line.points3);
+            Assert.AreEqual(AppConstants.PATH_WIDTH_IN_PIXELS, vectorLineMock.Line.lineWidth);
         }
 
         [UnityTest]
         public IEnumerator OnTokenSelect_WhenTokenSelectedSignalIsFired_SetCurrentSpaceAsOnlyPoint() {
-            drawPath.Line = lineMock;
-
             yield return null;
 
             signalBus.Fire(new TokenSelectedSignal(new GridSpace(0, 1)));
@@ -108,6 +121,61 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
 
             Assert.AreEqual(1, drawPath.Points.Count);
             Assert.Contains(new Vector3(-1, 0, -1), drawPath.Points);
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenSelect_WhenTokenSelectedSignalIsFired_SetLineTypeToPoints() {
+            yield return null;
+
+            signalBus.Fire(new TokenSelectedSignal(new GridSpace(0, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).lineType = LineType.Points;
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenSelect_WhenTokenSelectedSignalIsFired_SetTextureToPointTexture() {
+            yield return null;
+
+            signalBus.Fire(new TokenSelectedSignal(new GridSpace(0, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).texture = pointTexture;
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenSelect_WhenTokenSelectedSignalIsFired_SetMaterialToPathMaterialInResources() {
+            yield return null;
+
+            signalBus.Fire(new TokenSelectedSignal(new GridSpace(0, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).material = Resources.Load<Material>("PathMaterial");
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenSelect_WhenTokenSelectedSignalIsFired_SetColorToLineColor() {
+            yield return null;
+
+            signalBus.Fire(new TokenSelectedSignal(new GridSpace(0, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).SetColor(lineColor);
+        }
+        
+        [UnityTest]
+        public IEnumerator OnTokenSelect_WhenTokenSelectedSignalIsFired_CallDraw3D() {
+            yield return null;
+
+            signalBus.Fire(new TokenSelectedSignal(new GridSpace(0, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).Draw3D();
         }
 	}
 }
