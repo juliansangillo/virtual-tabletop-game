@@ -1,7 +1,7 @@
 using System;
+using NUnit.Framework;
 using NaughtyBikerGames.ProjectVirtualTabletop.Enums;
 using NaughtyBikerGames.ProjectVirtualTabletop.Utilities;
-using NUnit.Framework;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.Utilities {
 	public class ConvertDistanceTests {

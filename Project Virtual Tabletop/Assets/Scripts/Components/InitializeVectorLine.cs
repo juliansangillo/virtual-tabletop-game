@@ -1,7 +1,7 @@
-﻿using NaughtyBikerGames.ProjectVirtualTabletop.Adapters.Interfaces;
-using UnityEngine;
-using Vectrosity;
+﻿using UnityEngine;
 using Zenject;
+using Vectrosity;
+using NaughtyBikerGames.ProjectVirtualTabletop.Adapters.Interfaces;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
     public class InitializeVectorLine : MonoBehaviour {

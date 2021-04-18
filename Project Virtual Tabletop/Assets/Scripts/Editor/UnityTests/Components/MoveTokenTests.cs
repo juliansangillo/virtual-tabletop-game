@@ -5,6 +5,7 @@ using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using UnityEngine;
 using UnityEngine.TestTools;
+using Zenject;
 using NaughtyBikerGames.SDK.Editor.UnityTests;
 using NaughtyBikerGames.SDK.Interpolation.Interfaces;
 using NaughtyBikerGames.SDK.Raycast.Interfaces;
@@ -13,7 +14,6 @@ using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Components;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Components.Interfaces;
-using Zenject;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals.Installers;
 

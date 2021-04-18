@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
+using UnityEngine;
 using NaughtyBikerGames.ProjectVirtualTabletop.Components;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.Exceptions;
-using UnityEngine;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Utilities {
 	public static class GameObjectUtils {

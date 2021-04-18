@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
-using NaughtyBikerGames.ProjectVirtualTabletop.Adapters.Interfaces;
 using UnityEngine;
 using Vectrosity;
+using NaughtyBikerGames.ProjectVirtualTabletop.Adapters.Interfaces;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Adapters {
 	public class VectorLineAdapter : IVectorLine {

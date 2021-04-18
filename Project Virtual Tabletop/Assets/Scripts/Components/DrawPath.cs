@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.UI;
+using Zenject;
+using Vectrosity;
 using NaughtyBikerGames.ProjectVirtualTabletop.Adapters.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.Enums;
 using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
 using NaughtyBikerGames.ProjectVirtualTabletop.Utilities;
-using UnityEngine;
-using UnityEngine.UI;
-using Vectrosity;
-using Zenject;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
 	public class DrawPath : MonoBehaviour {

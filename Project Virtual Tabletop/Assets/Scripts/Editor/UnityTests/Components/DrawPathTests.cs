@@ -1,5 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using NSubstitute;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
+using UnityEngine.UI;
+using Zenject;
+using Vectrosity;
+using NaughtyBikerGames.SDK.Editor.UnityTests;
 using NaughtyBikerGames.ProjectVirtualTabletop.Adapters.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Components;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
@@ -8,15 +16,6 @@ using NaughtyBikerGames.ProjectVirtualTabletop.Enums;
 using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals.Installers;
-using NaughtyBikerGames.ProjectVirtualTabletop.Utilities;
-using NaughtyBikerGames.SDK.Editor.UnityTests;
-using NSubstitute;
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
-using UnityEngine.UI;
-using Vectrosity;
-using Zenject;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components {
 	public class DrawPathTests : ZenjectMonobehaviourTests {

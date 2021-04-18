@@ -1,8 +1,8 @@
 using System.Collections;
-using NaughtyBikerGames.ProjectVirtualTabletop.Components;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using NaughtyBikerGames.ProjectVirtualTabletop.Components;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components {
 	public class FaceCameraTests {

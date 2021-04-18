@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using NSubstitute;
+using Zenject;
 using Roy_T.AStar.Graphs;
 using Roy_T.AStar.Grids;
 using Roy_T.AStar.Paths;
 using Roy_T.AStar.Primitives;
-using Zenject;
 using NaughtyBikerGames.SDK.Editor.Tests;
 using NaughtyBikerGames.ProjectVirtualTabletop.Adapters.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
@@ -15,9 +15,6 @@ using NaughtyBikerGames.ProjectVirtualTabletop.Exceptions;
 using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals.Installers;
-using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Interfaces;
-using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Installers;
-using NaughtyBikerGames.ProjectVirtualTabletop.Entities.Installers;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
 	public class PathManagerTests : ZenjectTests {

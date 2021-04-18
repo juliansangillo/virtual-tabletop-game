@@ -1,11 +1,11 @@
 using System.Collections;
-using NaughtyBikerGames.ProjectVirtualTabletop.Adapters.Interfaces;
-using NaughtyBikerGames.ProjectVirtualTabletop.Components;
 using NSubstitute;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Vectrosity;
+using NaughtyBikerGames.ProjectVirtualTabletop.Adapters.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.Components;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components {
 	public class InitializeVectorLineTests {
