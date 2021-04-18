@@ -19,7 +19,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.Extensions {
         }
 
         [Test]
-        public void ReconnectNode_GivenGridPositionInMiddleOfGrid_AddIncomingAndOutgoingEdgesToAll4SurroundingPositions() {
+        public void ReconnectNode_GivenGridPositionInMiddleOfGrid_AddIncomingAndOutgoingEdgesToAll8SurroundingPositions() {
             GridPosition position = new GridPosition(1, 1);
             grid.DisconnectNode(position);
             INode node = grid.GetNode(position);
@@ -29,20 +29,28 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.Extensions {
 
             grid.ReconnectNode(position, Velocity.FromKilometersPerHour(10));
 
-            Assert.AreEqual(4, node.Incoming.Count);
+            Assert.AreEqual(8, node.Incoming.Count);
             Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(1, 0))).Count());
+            Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(0, 0))).Count());
             Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(0, 1))).Count());
+            Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(0, 2))).Count());
             Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(1, 2))).Count());
+            Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(2, 2))).Count());
             Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(2, 1))).Count());
-            Assert.AreEqual(4, node.Outgoing.Count);
+            Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(2, 0))).Count());
+            Assert.AreEqual(8, node.Outgoing.Count);
             Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(1, 0))).Count());
+            Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(0, 0))).Count());
             Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(0, 1))).Count());
+            Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(0, 2))).Count());
             Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(1, 2))).Count());
+            Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(2, 2))).Count());
             Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(2, 1))).Count());
+            Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(2, 0))).Count());
         }
 
         [Test]
-        public void ReconnectNode_GivenGridPositionOnEdgeOfGrid_AddIncomingAndOutgoingEdgesToAll3SurroundingPositions() {
+        public void ReconnectNode_GivenGridPositionOnEdgeOfGrid_AddIncomingAndOutgoingEdgesToAll5SurroundingPositions() {
             GridPosition position = new GridPosition(1, 2);
             grid.DisconnectNode(position);
             INode node = grid.GetNode(position);
@@ -52,18 +60,22 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.Extensions {
 
             grid.ReconnectNode(position, Velocity.FromKilometersPerHour(10));
 
-            Assert.AreEqual(3, node.Incoming.Count);
+            Assert.AreEqual(5, node.Incoming.Count);
             Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(1, 1))).Count());
+            Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(0, 1))).Count());
             Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(0, 2))).Count());
             Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(2, 2))).Count());
-            Assert.AreEqual(3, node.Outgoing.Count);
+            Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(2, 1))).Count());
+            Assert.AreEqual(5, node.Outgoing.Count);
             Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(1, 1))).Count());
+            Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(0, 1))).Count());
             Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(0, 2))).Count());
             Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(2, 2))).Count());
+            Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(2, 1))).Count());
         }
 
         [Test]
-        public void ReconnectNode_GivenGridPositionOnBottomRightCornerOfGrid_AddIncomingAndOutgoingEdgesToAll2SurroundingPositions() {
+        public void ReconnectNode_GivenGridPositionOnBottomRightCornerOfGrid_AddIncomingAndOutgoingEdgesToAll3SurroundingPositions() {
             GridPosition position = new GridPosition(2, 0);
             grid.DisconnectNode(position);
             INode node = grid.GetNode(position);
@@ -73,16 +85,18 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.Extensions {
 
             grid.ReconnectNode(position, Velocity.FromKilometersPerHour(10));
 
-            Assert.AreEqual(2, node.Incoming.Count);
+            Assert.AreEqual(3, node.Incoming.Count);
             Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(1, 0))).Count());
+            Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(1, 1))).Count());
             Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(2, 1))).Count());
-            Assert.AreEqual(2, node.Outgoing.Count);
+            Assert.AreEqual(3, node.Outgoing.Count);
             Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(1, 0))).Count());
+            Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(1, 1))).Count());
             Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(2, 1))).Count());
         }
 
         [Test]
-        public void ReconnectNode_GivenGridPositionOnTopLeftCornerOfGridAndBottomPositionIsAlsoDisconnected_AddIncomingAndOutgoingEdgesToRightPosition() {
+        public void ReconnectNode_GivenGridPositionOnTopLeftCornerOfGridAndBottomPositionIsAlsoDisconnected_AddIncomingAndOutgoingEdgesToTwoRemainingPosition() {
             GridPosition position = new GridPosition(0, 2);
             GridPosition other = new GridPosition(0, 1);
             grid.DisconnectNode(position);
@@ -97,10 +111,12 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.Extensions {
 
             grid.ReconnectNode(position, Velocity.FromKilometersPerHour(10));
 
-            Assert.AreEqual(1, node.Incoming.Count);
+            Assert.AreEqual(2, node.Incoming.Count);
             Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(1, 2))).Count());
-            Assert.AreEqual(1, node.Outgoing.Count);
+            Assert.AreEqual(1, node.Incoming.Where(edge => edge.Start == grid.GetNode(new GridPosition(1, 1))).Count());
+            Assert.AreEqual(2, node.Outgoing.Count);
             Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(1, 2))).Count());
+            Assert.AreEqual(1, node.Outgoing.Where(edge => edge.End == grid.GetNode(new GridPosition(1, 1))).Count());
         }
 
         [Test]

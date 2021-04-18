@@ -18,9 +18,13 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Extensions {
         private static void ConnectSurroundingNodes(Grid grid, GridPosition position, Velocity traversalVelocity) {
 			IList<GridPosition> others = new List<GridPosition>();
 			others.Add(new GridPosition(position.X, position.Y - 1));
+            others.Add(new GridPosition(position.X - 1, position.Y - 1));
 			others.Add(new GridPosition(position.X - 1, position.Y));
+            others.Add(new GridPosition(position.X - 1, position.Y + 1));
 			others.Add(new GridPosition(position.X, position.Y + 1));
+            others.Add(new GridPosition(position.X + 1, position.Y + 1));
 			others.Add(new GridPosition(position.X + 1, position.Y));
+            others.Add(new GridPosition(position.X + 1, position.Y - 1));
 
 			foreach (GridPosition other in others)
 				if (grid.IsInsideGrid(other) && !grid.IsDisconnectedNode(other)) {

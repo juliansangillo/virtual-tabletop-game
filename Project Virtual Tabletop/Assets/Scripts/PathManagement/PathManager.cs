@@ -35,7 +35,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.PathManagement {
 			CellSize = new Size(Distance.FromMeters(AppConstants.SPACE_WIDTH_IN_METERS), Distance.FromMeters(AppConstants.SPACE_HEIGHT_IN_METERS));
 			TraversalVelocity = Velocity.FromKilometersPerHour(1);
             
-			this.Grid = Grid.CreateGridWithLateralConnections(GridSize, CellSize, TraversalVelocity);
+            this.Grid = Grid.CreateGridWithLateralAndDiagonalConnections(GridSize, CellSize, TraversalVelocity);
 			this.pathFinder = pathFinder;
             this.signalBus = signalBus;
 

@@ -454,15 +454,15 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
         }
 
         [Test]
-        public void Reconnect_GivenValidGridSpaceSurroundedBy4ConnectedSpaces_ReconnectTheDisconnectedNodeToAll4SurroundingPositions() {
+        public void Reconnect_GivenValidGridSpaceSurroundedBy8ConnectedSpaces_ReconnectTheDisconnectedNodeToAll8SurroundingPositions() {
             GridSpace space = new GridSpace(1, 1);
             pathManager.Grid.DisconnectNode(space.AsGridPosition());
 
             pathManager.Reconnect(space);
             INode actual = pathManager.Grid.GetNode(space.AsGridPosition());
 
-            Assert.AreEqual(4, actual.Incoming.Count);
-            Assert.AreEqual(4, actual.Outgoing.Count);
+            Assert.AreEqual(8, actual.Incoming.Count);
+            Assert.AreEqual(8, actual.Outgoing.Count);
         }
 
         [Test]

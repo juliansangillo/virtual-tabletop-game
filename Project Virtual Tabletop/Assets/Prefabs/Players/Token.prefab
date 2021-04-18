@@ -85,7 +85,7 @@ MonoBehaviour:
   lengthText: {fileID: 6146582882677225584}
   defaultLength: 0
   distanceText: {fileID: 1603488969546728896}
-  unitOfDistance: 0
+  unitOfDistance: 1
   defaultDistance: 0
   decimalPrecision: 1
 --- !u!114 &7352638266420460841
