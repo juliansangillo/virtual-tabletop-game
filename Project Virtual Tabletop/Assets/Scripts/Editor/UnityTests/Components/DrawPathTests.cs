@@ -4,14 +4,17 @@ using NaughtyBikerGames.ProjectVirtualTabletop.Adapters.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Components;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
+using NaughtyBikerGames.ProjectVirtualTabletop.Enums;
 using NaughtyBikerGames.ProjectVirtualTabletop.PathManagement.Interfaces;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals.Installers;
+using NaughtyBikerGames.ProjectVirtualTabletop.Utilities;
 using NaughtyBikerGames.SDK.Editor.UnityTests;
 using NSubstitute;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using UnityEngine.UI;
 using Vectrosity;
 using Zenject;
 
@@ -21,6 +24,9 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
         float lineWidthInPixels;
         string endCapName;
         Texture2D pointTexture;
+        Canvas canvas;
+        Text lengthText;
+        Text distanceText;
 
         IPathManager pathManagerMock;
         IVectorLine vectorLineMock;
@@ -41,6 +47,9 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
             lineWidthInPixels = 5.0f;
             endCapName = "Ray";
             pointTexture = new Texture2D(32, 32);
+            canvas = new GameObject().AddComponent<Canvas>();
+            lengthText = new GameObject().AddComponent<Text>();
+            distanceText = new GameObject().AddComponent<Text>();
 
             pathManagerMock = Substitute.For<IPathManager>();
             vectorLineMock = Substitute.For<IVectorLine>();
@@ -69,6 +78,12 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
             drawPath.LineWidthInPixels = lineWidthInPixels;
             drawPath.EndCapName = endCapName;
             drawPath.PointTexture = pointTexture;
+            drawPath.Canvas = canvas;
+            drawPath.LengthText = lengthText;
+            drawPath.DefaultLength = 0;
+            drawPath.DistanceText = distanceText;
+            drawPath.DefaultDistance = 0;
+            drawPath.DecimalPrecision = 3;
 
             drawPath.Construct(pathManagerMock, vectorLineMock, signalBus);
         }
@@ -163,6 +178,60 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
             yield return null;
 
             vectorLineMock.Received(1).Draw3D();
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenSelect_WhenTokenSelectedSignalIsFired_ActivateUICanvasObject() {
+            canvas.gameObject.SetActive(false);
+
+            yield return null;
+
+            signalBus.Fire(new TokenSelectedSignal(new GridSpace(0, 1)));
+
+            yield return null;
+
+            Assert.True(canvas.gameObject.activeSelf);
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenSelect_WhenTokenSelectedSignalIsFired_SetLengthUITextToDefault() {
+            lengthText.text = "1";
+
+            yield return null;
+
+            signalBus.Fire(new TokenSelectedSignal(new GridSpace(0, 1)));
+
+            yield return null;
+
+            Assert.AreEqual("0", lengthText.text);
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenSelect_WhenTokenSelectedSignalIsFiredAndDistanceIsInMeters_SetDistanceUITextToDefaultInMeters() {
+            drawPath.UnitOfDistance = Distance.METERS;
+            distanceText.text = "1m";
+
+            yield return null;
+
+            signalBus.Fire(new TokenSelectedSignal(new GridSpace(0, 1)));
+
+            yield return null;
+
+            Assert.AreEqual("0m", distanceText.text);
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenSelect_WhenTokenSelectedSignalIsFiredAndDistanceIsInFeet_SetDistanceUITextToDefaultInFeet() {
+            drawPath.UnitOfDistance = Distance.FEET;
+            distanceText.text = "1ft";
+
+            yield return null;
+
+            signalBus.Fire(new TokenSelectedSignal(new GridSpace(0, 1)));
+
+            yield return null;
+
+            Assert.AreEqual("0ft", distanceText.text);
         }
 
         [UnityTest]
@@ -364,6 +433,62 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
         }
 
         [UnityTest]
+        public IEnumerator OnTokenDrag_WhenTokenDraggedSignalIsFired_SetLengthUITextToGridPathLength() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            spaces.Add(new GridSpace(1, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(1, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            Assert.AreEqual("1", lengthText.text);
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenDrag_WhenTokenDraggedSignalIsFiredAndUnitOfDistanceIsMeters_SetDistanceUITextToGridPathDistanceInMeters() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            spaces.Add(new GridSpace(1, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+            drawPath.UnitOfDistance = Distance.METERS;
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(1, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            Assert.AreEqual("1.524m", distanceText.text);
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenDrag_WhenTokenDraggedSignalIsFiredAndUnitOfDistanceIsFeet_SetDistanceUITextToGridPathDistanceInFeet() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            spaces.Add(new GridSpace(1, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+            drawPath.UnitOfDistance = Distance.FEET;
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(1, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            Assert.AreEqual($"5ft", distanceText.text);
+        }
+
+        [UnityTest]
         public IEnumerator OnTokenRelease_WhenTokenReleasedSignalIsFired_CallVectorLineDispose() {
             yield return null;
 
@@ -386,6 +511,19 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
             yield return null;
 
             Assert.AreEqual(0, drawPath.Points.Count);
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenRelease_WhenTokenReleasedSignalIsFired_DeactivateUICanvasObject() {
+            canvas.gameObject.SetActive(true);
+
+            yield return null;
+
+            signalBus.Fire(new TokenReleasedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            Assert.False(canvas.gameObject.activeSelf);
         }
 	}
 }
