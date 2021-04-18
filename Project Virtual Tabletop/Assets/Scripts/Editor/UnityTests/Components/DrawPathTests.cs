@@ -17,13 +17,9 @@ using Zenject;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components {
 	public class DrawPathTests : ZenjectMonobehaviourTests {
-        VectorLine lineMock;
-
-        Camera lineCamera;
         Color lineColor;
-        Texture2D lineTexture;
-        Texture2D frontTexture;
-        Texture2D backTexture;
+        float lineWidthInPixels;
+        string endCapName;
         Texture2D pointTexture;
 
         IPathManager pathManagerMock;
@@ -41,13 +37,9 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
             SignalBusInstaller.Install(Container);
             TokenSignalsInstaller.Install(Container);
 
-            lineMock = Substitute.For<VectorLine>("", new List<Vector3>(), 0);
-
-            lineCamera = new GameObject().AddComponent<Camera>();
             lineColor = Color.yellow;
-            lineTexture = new Texture2D(32, 32);
-            frontTexture = new Texture2D(32, 32);
-            backTexture = new Texture2D(32, 32);
+            lineWidthInPixels = 5.0f;
+            endCapName = "Ray";
             pointTexture = new Texture2D(32, 32);
 
             pathManagerMock = Substitute.For<IPathManager>();
@@ -73,28 +65,23 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
             drawPathObject = new GameObject("Token");
             drawPath = drawPathObject.AddComponent<DrawPath>();
 
-            drawPath.LineCamera = lineCamera;
             drawPath.LineColor = lineColor;
-            drawPath.LineTexture = lineTexture;
-            drawPath.FrontTexture = frontTexture;
-            drawPath.BackTexture = backTexture;
+            drawPath.LineWidthInPixels = lineWidthInPixels;
+            drawPath.EndCapName = endCapName;
             drawPath.PointTexture = pointTexture;
 
             drawPath.Construct(pathManagerMock, vectorLineMock, signalBus);
         }
 
         [UnityTest]
-        public IEnumerator Start_WhenCalled_SetVectorLineCamera3D() {
+        public IEnumerator OnTokenSelect_WhenTokenSelectedSignalIsFired_ThenReconnectCurrentSpaceToPathToEnablePathFinding() {
             yield return null;
 
-            vectorLineMock.Received(1).SetCamera3D(lineCamera);
-        }
+            signalBus.Fire(new TokenSelectedSignal(new GridSpace(0, 1)));
 
-        [UnityTest]
-        public IEnumerator Start_WhenCalled_SetVectorLineEndCap() {
             yield return null;
 
-            vectorLineMock.Received(1).SetEndCap("Ray", EndCap.Both, -1.0f, lineTexture, frontTexture, backTexture);
+            pathManagerMock.Received(1).Reconnect(new GridSpace(0, 1));
         }
 
         [UnityTest]
@@ -108,7 +95,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
             Assert.IsNotNull(vectorLineMock.Line);
             Assert.AreEqual("Token_Line", vectorLineMock.Line.name);
             Assert.AreEqual(drawPath.Points, vectorLineMock.Line.points3);
-            Assert.AreEqual(AppConstants.PATH_WIDTH_IN_PIXELS, vectorLineMock.Line.lineWidth);
+            Assert.AreEqual(lineWidthInPixels, vectorLineMock.Line.lineWidth);
         }
 
         [UnityTest]
@@ -176,6 +163,229 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components 
             yield return null;
 
             vectorLineMock.Received(1).Draw3D();
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenDrag_WhenTokenDraggedSignalIsFired_CallPathManagerFindOnSourceAndDestination() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            spaces.Add(new GridSpace(1, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(1, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            pathManagerMock.Received(1).Find(new GridSpace(0, 1), new GridSpace(1, 1));
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenDrag_WhenTokenDraggedSignalIsFired_SetPointsToTheListOfVector3PositionsOfEachGridSpaceInPath() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            spaces.Add(new GridSpace(1, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(1, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            Assert.AreEqual(2, drawPath.Points.Count);
+            Assert.Contains(new Vector3(-1, 0, -1), drawPath.Points);
+            Assert.Contains(new Vector3(1, 0, -1), drawPath.Points);
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenDrag_WhenTokenDraggedSignalIsFired_SetVectorLinePoints3ToTheNewPoints() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            spaces.Add(new GridSpace(1, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(1, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).points3 = drawPath.Points;
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenDrag_GivenMoreThanOnePointOnPath_SetLineTypeToContinuous() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            spaces.Add(new GridSpace(1, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(1, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).lineType = LineType.Continuous;
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenDrag_GivenMoreThanOnePointOnPath_SetJoinsToWeld() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            spaces.Add(new GridSpace(1, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(1, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).joins = Joins.Weld;
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenDrag_GivenMoreThanOnePointOnPath_SetEndCap() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            spaces.Add(new GridSpace(1, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(1, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).endCap = endCapName;
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenDrag_GivenMoreThanOnePointOnPath_SetContinuousTextureToTrue() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            spaces.Add(new GridSpace(1, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(1, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).continuousTexture = true;
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenDrag_GivenOnlyOnePointOnPath_SetLineTypeToPoints() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(0, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(0, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).lineType = LineType.Points;
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenDrag_GivenOnlyOnePointOnPath_SetTextureToPointTexture() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(0, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(0, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).texture = pointTexture;
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenDrag_WhenTokenDraggedSignalIsFired_SetColorToLineColor() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            spaces.Add(new GridSpace(1, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(1, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).SetColor(lineColor);
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenDrag_WhenTokenDraggedSignalIsFired_CallDraw3D() {
+            List<GridSpace> spaces = new List<GridSpace>();
+            spaces.Add(new GridSpace(0, 1));
+            spaces.Add(new GridSpace(1, 1));
+            GridPath fakePath = new GridPath(1, AppConstants.SPACE_WIDTH_IN_METERS, spaces);
+
+            pathManagerMock.Find(new GridSpace(0, 1), new GridSpace(1, 1)).Returns(fakePath);
+
+            yield return null;
+
+            signalBus.Fire(new TokenDraggedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).Draw3D();
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenRelease_WhenTokenReleasedSignalIsFired_CallVectorLineDispose() {
+            yield return null;
+
+            signalBus.Fire(new TokenReleasedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            vectorLineMock.Received(1).Dispose();
+        }
+
+        [UnityTest]
+        public IEnumerator OnTokenRelease_WhenTokenReleasedSignalIsFired_ClearPoints() {
+            drawPath.Points.Add(new Vector3(-1, 0, -1));
+            drawPath.Points.Add(new Vector3(1, 0, -1));
+            
+            yield return null;
+
+            signalBus.Fire(new TokenReleasedSignal(new GridSpace(0, 1), new GridSpace(1, 1)));
+
+            yield return null;
+
+            Assert.AreEqual(0, drawPath.Points.Count);
         }
 	}
 }

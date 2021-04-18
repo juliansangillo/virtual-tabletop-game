@@ -104,6 +104,20 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.Extensions {
         }
 
         [Test]
+        public void ReconnectNode_GivenGridPositionThatIsNotDisconnected_DoNothing() {
+            GridPosition position = new GridPosition(1, 1);
+            INode node = grid.GetNode(position);
+
+            Assert.AreEqual(4, node.Incoming.Count);
+            Assert.AreEqual(4, node.Outgoing.Count);
+
+            grid.ReconnectNode(position, Velocity.FromKilometersPerHour(10));
+
+            Assert.AreEqual(4, node.Incoming.Count);
+            Assert.AreEqual(4, node.Outgoing.Count);
+        }
+
+        [Test]
         public void IsInsideGrid_GivenGridPositionWhereNodeExistsInsideGrid_ReturnTrue() {
             GridPosition position = new GridPosition(1, 1);
 

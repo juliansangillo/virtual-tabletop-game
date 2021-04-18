@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using NaughtyBikerGames.ProjectVirtualTabletop.Adapters.Interfaces;
 using UnityEngine;
 using Vectrosity;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Adapters {
-	public class VectorLineAdapter : IVectorLine, IDisposable {
+	public class VectorLineAdapter : IVectorLine {
         private VectorLine line;
         public VectorLine Line {
             get {
@@ -16,6 +17,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Adapters {
             }
         }
 
+        public List<Vector3> points3 { get => line.points3; set => line.points3 = value; }
 		public LineType lineType { get => line.lineType; set => line.lineType = value; }
 		public Joins joins { get => line.joins; set => line.joins = value; }
 		public Texture texture { get => line.texture; set => line.texture = value; }
@@ -27,8 +29,8 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Adapters {
 			VectorLine.SetCamera3D(camera);
 		}
 
-		public void SetEndCap(string name, EndCap capType, float offset, params Texture2D[] textures) {
-			VectorLine.SetEndCap(name, capType, offset, textures);
+		public void SetEndCap(string name, EndCap capType, float offsetFront, float offsetBack, float scaleFront, float scaleBack, params Texture2D[] textures) {
+            VectorLine.SetEndCap(name, capType, offsetFront, offsetBack, scaleFront, scaleBack, textures);
 		}
 
         public void SetColor(Color color) {

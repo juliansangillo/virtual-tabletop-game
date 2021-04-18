@@ -236,7 +236,7 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.Tests.PathManagement {
 
             pathFinder.FindPath(GridPosition.Zero, new GridPosition(2, 2), Arg.Any<Grid>()).Returns(GetStubbedPath());
 
-            int actual = pathManager.Find(src, dest).Count;
+            int actual = pathManager.Find(src, dest).Length;
 
             Assert.AreEqual(4, actual);
 		}
