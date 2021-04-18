@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2400575017664798412}
   - component: {fileID: 2400575018372500316}
   - component: {fileID: 5020654954124456143}
+  - component: {fileID: 7352638266420460841}
   m_Layer: 0
   m_Name: Token
   m_TagString: Player
@@ -87,6 +88,20 @@ MonoBehaviour:
   unitOfDistance: 0
   defaultDistance: 0
   decimalPrecision: 1
+--- !u!114 &7352638266420460841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2400575017664798414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3273d032a7787dada6ac2fd7daf0e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  model: {fileID: 2400575018072660546}
+  transparent: {fileID: 2100000, guid: d7a645228799051c88b1e4af3e9bbd34, type: 2}
 --- !u!1 &2400575018072660546
 GameObject:
   m_ObjectHideFlags: 0

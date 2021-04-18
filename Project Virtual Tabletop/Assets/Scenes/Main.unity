@@ -1699,18 +1699,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 559065701}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &559065703 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8405357962402651148, guid: ad656a03365c4812e9e74b0359629f31,
-    type: 3}
-  m_PrefabInstance: {fileID: 559065701}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e09d9bf8b1e7195095279995709a10f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &620556207
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2149,18 +2137,30 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2400575018372500314}
   m_PrefabAsset: {fileID: 0}
+--- !u!20 &767082069 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 7763358831813648771, guid: b7cf13a80a288bf94a5af8fc34109c1c,
+    type: 3}
+  m_PrefabInstance: {fileID: 7763358831214450327}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1018680937 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7763358831557083390, guid: b7cf13a80a288bf94a5af8fc34109c1c,
     type: 3}
   m_PrefabInstance: {fileID: 7763358831214450327}
   m_PrefabAsset: {fileID: 0}
---- !u!20 &1443980476 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 7763358831813648771, guid: b7cf13a80a288bf94a5af8fc34109c1c,
+--- !u!114 &1313913037 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8405357962402651148, guid: ad656a03365c4812e9e74b0359629f31,
     type: 3}
-  m_PrefabInstance: {fileID: 7763358831214450327}
+  m_PrefabInstance: {fileID: 559065701}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e09d9bf8b1e7195095279995709a10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1500225776
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4121,24 +4121,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2400575018372500316, guid: 06a35370e716641f4b7c3bb37d4b211b,
         type: 3}
-      propertyPath: gridSpaceMono
-      value: 
-      objectReference: {fileID: 559065703}
+      propertyPath: lerpDuration
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 2400575018372500316, guid: 06a35370e716641f4b7c3bb37d4b211b,
         type: 3}
       propertyPath: currentSpace
       value: 
-      objectReference: {fileID: 559065703}
-    - target: {fileID: 2400575018372500316, guid: 06a35370e716641f4b7c3bb37d4b211b,
-        type: 3}
-      propertyPath: lerpDuration
-      value: 0.1
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1313913037}
     - target: {fileID: 4941633023996289669, guid: 06a35370e716641f4b7c3bb37d4b211b,
         type: 3}
       propertyPath: m_Camera
       value: 
-      objectReference: {fileID: 1443980476}
+      objectReference: {fileID: 767082069}
     - target: {fileID: 5020654954124456143, guid: 06a35370e716641f4b7c3bb37d4b211b,
         type: 3}
       propertyPath: unitOfDistance
@@ -4148,7 +4143,7 @@ PrefabInstance:
         type: 3}
       propertyPath: targetCamera
       value: 
-      objectReference: {fileID: 1443980476}
+      objectReference: {fileID: 767082069}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06a35370e716641f4b7c3bb37d4b211b, type: 3}
 --- !u!1001 &4938750875739132625
