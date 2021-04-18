@@ -1,14 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
-using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
-using NaughtyBikerGames.ProjectVirtualTabletop.Utilities;
 using UnityEngine;
 using Zenject;
+using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
+using NaughtyBikerGames.ProjectVirtualTabletop.Utilities;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Components {
-    public class CreateAfterimage : MonoBehaviour {
+	public class CreateAfterimage : MonoBehaviour {
         [SerializeField] private GameObject model;
         [SerializeField] private Material transparent;
 

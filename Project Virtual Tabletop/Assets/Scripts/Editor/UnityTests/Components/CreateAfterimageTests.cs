@@ -1,14 +1,14 @@
 using System.Collections;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
+using Zenject;
+using NaughtyBikerGames.SDK.Editor.UnityTests;
 using NaughtyBikerGames.ProjectVirtualTabletop.Components;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
 using NaughtyBikerGames.ProjectVirtualTabletop.Signals.Installers;
-using NaughtyBikerGames.SDK.Editor.UnityTests;
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
-using Zenject;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Editor.UnityTests.Components {
 	public class CreateAfterimageTests : ZenjectMonobehaviourTests {
