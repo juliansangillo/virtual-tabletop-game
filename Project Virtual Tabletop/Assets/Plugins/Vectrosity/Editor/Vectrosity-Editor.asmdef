@@ -1,0 +1,17 @@
+{
+    "name": "Vectrosity-Editor",
+    "references": [
+        "GUID:e6b2ff5902fbccd63b5ccb77f2b108b9"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

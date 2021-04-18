@@ -8,7 +8,7 @@ namespace NaughtyBikerGames.SDK.Raycast {
 	* Default implementation of IRaycastable.
 	*
 	* @author Julian Sangillo \<https://github.com/juliansangillo\>
-	* @version 3.0
+	* @version 4.0
 	* @since 3.0
 	*
 	* @see RaycasterInstaller

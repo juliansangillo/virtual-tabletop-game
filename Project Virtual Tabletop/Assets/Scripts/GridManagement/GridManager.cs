@@ -1,15 +1,42 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Zenject;
 using NaughtyBikerGames.ProjectVirtualTabletop.Constants;
 using NaughtyBikerGames.ProjectVirtualTabletop.Entities;
 using NaughtyBikerGames.ProjectVirtualTabletop.Exceptions;
+using NaughtyBikerGames.ProjectVirtualTabletop.Extensions;
 using NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Interfaces;
+using NaughtyBikerGames.ProjectVirtualTabletop.Signals;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement {
-	public class GridManager : IGridManager {
-		public Element[,] Grid { get; }
+	public class GridManager : IGridManager, IInitializable {
+		private readonly GridDetails gridDetails;
+        private readonly SignalBus signalBus;
+
+        public Element[,] Grid { get; internal set; }
 		
-		public GridManager(Element[,] grid) {
-			this.Grid = grid;
+        [Inject]
+		public GridManager(GridDetails gridDetails, SignalBus signalBus) {
+			this.gridDetails = gridDetails;
+            this.signalBus = signalBus;
+		}
+
+        public void Initialize() {
+            ThrowExceptionIfArgumentIsNull(gridDetails, "gridDetails", ExceptionConstants.VA_ARGUMENT_NULL);
+            ThrowExceptionIfGridDetailsIsInvalid();
+
+            if(Grid == null) {
+                Grid = new Element[gridDetails.NumberOfRows, gridDetails.NumberOfColumns];
+
+                foreach (Token token in gridDetails.Tokens)
+                    Grid[token.CurrentSpace.Row, token.CurrentSpace.Column] = token;
+            }
+
+            IList<Element> elements = Grid.AsFlat().Where(element => element != null).ToList();
+            IList<GridSpace> spaces = elements.Select(element => element.CurrentSpace).ToList();
+
+            signalBus.Fire(new GridInitializedSignal(elements, spaces));
 		}
 
 		public void AddTo(GridSpace space, Element element) {
@@ -20,6 +47,8 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement {
 			ThrowExceptionIfAnElementExistsOnSpace(space, ExceptionConstants.VA_ELEMENT_EXISTS_ON_SPACE);
 
 			Grid[space.Row, space.Column] = element;
+
+            signalBus.Fire(new GridAddedSignal(element, space));
 		}
 
 		public Element GetElementOn(GridSpace space) {
@@ -50,6 +79,8 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement {
 
 			Grid[to.Row, to.Column] = Grid[from.Row, from.Column];
 			Grid[from.Row, from.Column] = null;
+
+            signalBus.Fire(new GridMovedSignal(Grid[to.Row, to.Column], from, to));
 		}
 
 		public Element RemoveFrom(GridSpace space) {
@@ -60,6 +91,9 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement {
 
 			Element element = Grid[space.Row, space.Column];
 			Grid[space.Row, space.Column] = null;
+
+            signalBus.Fire(new GridRemovedSignal(element, space));
+
 			return element;
 		}
 
@@ -100,5 +134,20 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement {
 			if(Grid[space.Row, space.Column] != null)
 				throw new InvalidOperationException(message);
 		}
+
+        private void ThrowExceptionIfGridDetailsIsInvalid() {
+            if(!gridDetails.IsNumberOfRowsValid())
+                throw new ArgumentException(
+                    string.Format(ExceptionConstants.VA_NUMBER_OF_ROWS_INVALID, gridDetails.NumberOfRows),
+                    "gridDetails"
+                );
+            else if(!gridDetails.IsNumberOfColumnsValid())
+                throw new ArgumentException(
+                    string.Format(ExceptionConstants.VA_NUMBER_OF_COLUMNS_INVALID, gridDetails.NumberOfColumns), 
+                    "gridDetails"
+                );
+            else if(!gridDetails.IsTokensValid())
+                throw new ArgumentException(ExceptionConstants.VA_LIST_OF_TOKENS_INVALID, "gridDetails");
+        }
 	}
 }

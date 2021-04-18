@@ -1,9 +1,11 @@
 using Zenject;
 
 namespace NaughtyBikerGames.ProjectVirtualTabletop.GridManagement.Installers {
-	public class GridManagerInstaller : MonoInstaller<GridManagerInstaller> {
-        public override void InstallBindings() {
-            GridManagerBaseInstaller.Install(Container);
-        }
+	public class GridManagerInstaller : Installer<GridManagerInstaller> {
+		public override void InstallBindings() {
+			Container.BindInterfacesTo<GridManager>()
+				.FromNew()
+				.AsSingle();
+		}
 	}
 }

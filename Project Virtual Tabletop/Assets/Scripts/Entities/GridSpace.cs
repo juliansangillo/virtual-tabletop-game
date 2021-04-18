@@ -1,3 +1,5 @@
+using Roy_T.AStar.Primitives;
+
 namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities {
 	public class GridSpace {
 		public int Row { get; set; }
@@ -7,6 +9,10 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities {
 			this.Row = row;
 			this.Column = column;
 		}
+
+        public GridPosition AsGridPosition() {
+            return new GridPosition(Column, Row);
+        }
 
 		public bool IsValid() {
 			return IsRowNonNegative() && IsColumnNonNegative();
@@ -19,5 +25,26 @@ namespace NaughtyBikerGames.ProjectVirtualTabletop.Entities {
 		private bool IsColumnNonNegative() {
 			return Column >= 0;
 		}
+
+		public override bool Equals(object obj) {
+			return obj != null &&
+                   obj is GridSpace space &&
+				   Row == space.Row &&
+				   Column == space.Column;
+		}
+
+		public override int GetHashCode() {
+			int hashCode = 240067226;
+			hashCode = hashCode * -1521134295 + Row.GetHashCode();
+			hashCode = hashCode * -1521134295 + Column.GetHashCode();
+			return hashCode;
+		}
+
+		public override string ToString() {
+			return base.ToString() + $" ({Row}, {Column})";
+		}
+
+        public static bool operator ==(GridSpace left, GridSpace right) => left?.Equals(right) ?? object.Equals(right, null);
+        public static bool operator !=(GridSpace left, GridSpace right) => !left?.Equals(right) ?? !object.Equals(right, null);
 	}
 }

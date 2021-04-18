@@ -7,7 +7,7 @@ namespace NaughtyBikerGames.SDK.Adapters.Interfaces {
 	* to, since that is more valuable data in most circumstances.
 	*
 	* @author Julian Sangillo \<https://github.com/juliansangillo\>
-	* @version 3.0
+	* @version 4.0
 	* @since 3.0
 	*/
 	public interface IRaycastHit {

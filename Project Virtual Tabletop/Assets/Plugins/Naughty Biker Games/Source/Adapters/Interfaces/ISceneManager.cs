@@ -8,7 +8,7 @@ namespace NaughtyBikerGames.SDK.Adapters.Interfaces {
     * testing purposes.
     *
     * @author Julian Sangillo \<https://github.com/juliansangillo\>
-    * @version 3.0
+    * @version 4.0
     * @since 2.0
     */
 	public interface ISceneManager {
